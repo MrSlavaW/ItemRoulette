@@ -264,7 +264,7 @@ namespace ItemRoulette.Core
                     if (!admin) AdminMenuUI.Instance?.SetOpen(false);
                     break;
                 case ClientEventKind.SyncVoidCurse:
-                    if (m.subjectNetId == 0)
+                    if (m.count == 0 && m.subjectNetId == 0)
                     {
                         mgr.ClearVoidCurseStacks();
                     }

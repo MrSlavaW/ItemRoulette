@@ -52,7 +52,7 @@ namespace ItemRoulette.Core
 
         private readonly Dictionary<uint, float> _playerTierMultipliers = new Dictionary<uint, float>();
         private readonly List<(CharacterMaster master, ItemIndex itemIndex, int count)> _spectralItems = new List<(CharacterMaster, ItemIndex, int)>();
-        private readonly Dictionary<NetworkInstanceId, int> _playerVoidCurseStacks = new Dictionary<NetworkInstanceId, int>();
+        private readonly Dictionary<uint, int> _playerVoidCurseStacks = new Dictionary<uint, int>();
 
         // -----------------------------------------------------------------
         // Stage Activation Counters
@@ -182,57 +182,42 @@ namespace ItemRoulette.Core
         public int GetVoidCurseStacks(CharacterMaster master)
         {
             if (master == null) return 0;
-            return _playerVoidCurseStacks.TryGetValue(master.netId, out int count) ? count : 0;
+            uint netId = master.netId.Value;
+            if (netId != 0 && _playerVoidCurseStacks.TryGetValue(netId, out int count))
+            {
+                return count;
+            }
+            if (_playerVoidCurseStacks.TryGetValue(0, out int localCount))
+            {
+                return localCount;
+            }
+            return 0;
         }
 
         public void AddVoidCurseStack(CharacterMaster master)
         {
             if (master == null) return;
             int current = GetVoidCurseStacks(master);
-            _playerVoidCurseStacks[master.netId] = current + 1;
-
-            var body = master.GetBody();
-            if (body != null)
+            uint netId = master.netId.Value;
+            _playerVoidCurseStacks[netId] = current + 1;
+            if (netId != 0)
             {
-                body.RecalculateStats();
+                _playerVoidCurseStacks[0] = current + 1;
             }
         }
 
         public void SetVoidCurseStacksClient(uint masterNetIdValue, int stacks)
         {
-            var netId = new NetworkInstanceId(masterNetIdValue);
-            _playerVoidCurseStacks[netId] = stacks;
-
-            if (PlayerCharacterMasterController.instances != null)
+            _playerVoidCurseStacks[masterNetIdValue] = stacks;
+            if (masterNetIdValue != 0)
             {
-                foreach (var pcmc in PlayerCharacterMasterController.instances)
-                {
-                    if (pcmc != null && pcmc.master != null && pcmc.master.netId.Value == masterNetIdValue)
-                    {
-                        var body = pcmc.master.GetBody();
-                        if (body != null)
-                        {
-                            body.RecalculateStats();
-                        }
-                        break;
-                    }
-                }
+                _playerVoidCurseStacks[0] = stacks;
             }
         }
 
         public void ClearVoidCurseStacks()
         {
-            _playerVoidCurseStacks.Clear();
-            if (UnityEngine.Networking.NetworkServer.active)
-            {
-                ServerEvents.SendToAll(new ClientEventMessage
-                {
-                    kind = (byte)ClientEventKind.SyncVoidCurse,
-                    count = 0,
-                    subjectNetId = 0
-                });
-            }
-            if (PlayerCharacterMasterController.instances != null)
+            if (UnityEngine.Networking.NetworkServer.active && PlayerCharacterMasterController.instances != null && RoR2Content.Buffs.PermanentCurse != null)
             {
                 foreach (var pcmc in PlayerCharacterMasterController.instances)
                 {
@@ -241,11 +226,18 @@ namespace ItemRoulette.Core
                         var body = pcmc.master.GetBody();
                         if (body != null)
                         {
-                            body.RecalculateStats();
+                            int stacks = GetVoidCurseStacks(pcmc.master);
+                            if (stacks > 0)
+                            {
+                                int modBuffs = Hooks.CursePenaltyHooks.CalculateCurseBuffs(stacks);
+                                int current = body.GetBuffCount(RoR2Content.Buffs.PermanentCurse);
+                                body.SetBuffCount(RoR2Content.Buffs.PermanentCurse.buffIndex, Mathf.Max(0, current - modBuffs));
+                            }
                         }
                     }
                 }
             }
+            _playerVoidCurseStacks.Clear();
         }
 
         // -----------------------------------------------------------------
