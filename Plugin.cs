@@ -15,7 +15,7 @@ namespace ItemRoulette
     {
         public const string PluginGUID = "com.user.itemroulette";
         public const string PluginName = "ItemRoulette";
-        public const string PluginVersion = "1.5.4";
+        public const string PluginVersion = "1.5.5";
 
         private void Awake()
         {

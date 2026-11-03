@@ -110,7 +110,11 @@
 
   <ItemGroup>
     <EmbeddedResource Include="Language\**\*.json" />
+    <EmbeddedResource Include="Assets\**\*.png" />
     <None Update="Language\**\*.*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\**\*.*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

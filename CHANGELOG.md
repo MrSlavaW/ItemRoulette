@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.5.5] - 2026-11-03
+### Vanilla-Authentic Artifact Icon Overhaul:
+- **Risk of Rain 2 Visual Parity**:
+  - Replaced the legacy flat casino-styled procedural artifact icon with an authentic celestial obelisk roulette disc matching the exact aesthetic language of vanilla artifacts.
+  - Implemented the iconic dual-palette visual style: deep midnight-indigo base (`#100734`) paired with luminous lunar lavender etchings (`#EBD7F2`) and 100% transparent alpha background.
+- **Dedicated Selected & Deselected Sprite States**:
+  - `smallIconSelectedSprite`: Radiant lavender glow across outer notched rim, radial pocket dividers, and the celestial crystal indicator chevron when the artifact is enabled.
+  - `smallIconDeselectedSprite`: Subdued dusk-mauve tones (`#554866`) with soft alpha transparency for dormant state on the artifact selection screen.
+- **Embedded & Custom-Loadable Asset Pipeline**:
+  - High-resolution textures are compiled directly into `ItemRoulette.dll` as embedded resources (`Assets/Artifact/`), ensuring zero external file dependency and instant load times.
+  - Added support for player/modder customization via loose files in `BepInEx/plugins/HorinisTeam-ItemRoulette/Assets/Artifact/` with a graceful procedural fallback.
+
 ## [1.5.4] - 2026-11-03
 ### Granular UI Scaling Category & Independent Element Sizing:
 - **Dedicated UI Scaling Category (`00c. Client - UI Scale`)**:
