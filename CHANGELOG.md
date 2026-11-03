@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.5.1] - 2026-11-03
+### Upstream Localization Hotfix & Networked Subtitle Tokens (Videowiz92 Upstream Parity):
+- **Chaos Events Description Overwrite Fix**:
+  - Made `ChaosEventDefinition.Description` a read-only property to prevent assigning single-language strings to dual-language fields.
+  - Migrated all dynamic event result descriptions (`DoubleItem`, `TemporaryDuplicates`, `SpectralDuplicates`, `QualityCashback`, `DoubleGold`, `AllyMirror`, `ForgeAnomaly`, `LoseGold30`, `SacrificeItem`, `HallowedCurse`, `VoidCorrosion`) to tokenized lookups via `SetDescriptionFromToken(token, args...)` and `SetDescription(ru, en)`.
+  - Fixed rare fallback strings in `ExecuteElementalAspect`, `ExecuteAlliedDrones`, and aspect resolution.
+- **Client-Authoritative Minion Subtitles (`CharacterBody.subtitleNameToken`)**:
+  - Replaced hardcoded Russian string concatenation on the host with networked structural tokens (`ITEMROULETTE_SUBTITLE_COMPANION:{owner}` and `ITEMROULETTE_SUBTITLE_DRONE:{owner}`).
+  - Hooked `CharacterBody.GetSubtitle` on clients to dynamically format companion and drone subtitles according to each player's local language.
+  - Added dedicated registered tokens `ITEMROULETTE_SUBTITLE_HOSTILE_DRONE` and `ITEMROULETTE_SUBTITLE_HOSTILE_DRONE_REBOOTING`.
+- **Special Thanks**:
+  - Invaluable assistance, report, and testing from **Videowiz92**.
+
 ## [1.5.0] - 2026-10-31
 ### Artifact of the Roulette, Quality Mod Equipment Fix, Substandard Duplicator & Polish:
 - **Artifact of the Roulette ("Artifact Edition")**:
