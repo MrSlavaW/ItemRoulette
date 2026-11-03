@@ -257,8 +257,6 @@ namespace ItemRoulette.UI
                 if (master != null)
                 {
                     SendAdminAction(master, "AddFreeRolls", 5);
-                    RouletteManager.Instance.AddFreeRolls(5);
-                    RouletteUI.Instance?.ShowToast(Localization.Get("+5 Бесплатных круток!", "+5 Free spins!"), new Color(0.4f, 0.95f, 0.5f), 2.5f);
                 }
             }
             tX += 76f;
@@ -268,8 +266,6 @@ namespace ItemRoulette.UI
                 if (master != null)
                 {
                     SendAdminAction(master, "AddFreeLegendary", 1);
-                    RouletteManager.Instance.AddFreeLegendaryRolls(1);
-                    RouletteUI.Instance?.ShowToast(Localization.Get("+1 Легендарная крутка!", "+1 Legendary spin!"), ItemPoolHelper.ColorLegendary, 2.5f);
                 }
             }
             tX += 72f;
@@ -279,8 +275,6 @@ namespace ItemRoulette.UI
                 if (master != null)
                 {
                     SendAdminAction(master, "AddPendingVoid", 1);
-                    RouletteManager.Instance.AddPendingVoidRolls(1);
-                    RouletteUI.Instance?.ShowToast(Localization.Get("+1 Крутка Бездны!", "+1 Void spin!"), ItemPoolHelper.ColorVoid, 2.5f);
                 }
             }
             tX += 76f;
