@@ -53,7 +53,6 @@ namespace ItemRoulette.Configuration
         public static ConfigEntry<float> AutoSpinDelay { get; private set; } = null!;
         public static ConfigEntry<bool> ShowChanceWidgetInUI { get; private set; } = null!;
         public static ConfigEntry<bool> EnableItemDescriptionAdditions { get; private set; } = null!;
-        public static ConfigEntry<float> UiScale { get; private set; } = null!;
 
         // 00b. Client - Controls & Hotkeys
         public static ConfigEntry<KeyboardShortcut> Hotkey { get; private set; } = null!;
@@ -63,6 +62,12 @@ namespace ItemRoulette.Configuration
         public static ConfigEntry<KeyboardShortcut> AdminMenuHotkey { get; private set; } = null!;
         public static ConfigEntry<KeyboardShortcut> CasinoToggleHotkey { get; private set; } = null!;
         public static ConfigEntry<KeyboardShortcut> NotificationJournalHotkey { get; private set; } = null!;
+
+        // 00c. Client - UI Scale
+        public static ConfigEntry<float> UiScale { get; private set; } = null!;
+        public static ConfigEntry<float> UiScaleRoulette { get; private set; } = null!;
+        public static ConfigEntry<float> UiScaleWindows { get; private set; } = null!;
+        public static ConfigEntry<float> UiScaleToasts { get; private set; } = null!;
 
         // 01. Drop Suppression
         public static ConfigEntry<bool> DisableChestSpawns { get; private set; } = null!;
@@ -445,13 +450,6 @@ namespace ItemRoulette.Configuration
                 "Добавлять ли к описаниям ванильных предметов подсказки об их новых механиках в ItemRoulette (Затяжное одиночество, Кукла шанса, Звезда скидок, Клевер, Чистота)."
             );
 
-            UiScale = config.Bind(
-                "00a. Client - General & UI",
-                "UiScale",
-                1.0f,
-                "Масштаб элементов интерфейса мода (0.1 - 5.0, по умолчанию 1.0). Позволяет адаптировать размер UI под различные разрешения экранов (1080p, 1440p, 4K, Steam Deck)."
-            );
-
             // ==========================================
             // 00b. Client - Controls & Hotkeys
             // ==========================================
@@ -502,6 +500,37 @@ namespace ItemRoulette.Configuration
                 "NotificationJournalHotkey",
                 new KeyboardShortcut(KeyCode.J),
                 "Горячая клавиша для открытия и закрытия Журнала событий забега (по умолчанию J)."
+            );
+
+            // ==========================================
+            // 00c. Client - UI Scale
+            // ==========================================
+            UiScale = config.Bind(
+                "00c. Client - UI Scale",
+                "UiScale",
+                1.0f,
+                "Общий множитель масштабирования всех элементов интерфейса мода (0.1 - 5.0, по умолчанию 1.0). Влияет на весь UI целиком."
+            );
+
+            UiScaleRoulette = config.Bind(
+                "00c. Client - UI Scale",
+                "UiScaleRoulette",
+                1.0f,
+                "Масштаб рулетки предметов и ленты казино (0.1 - 5.0, по умолчанию 1.0). Управляет размером верхнего баннера, полоски подсказки, индикатора зажатия и окон выбора."
+            );
+
+            UiScaleWindows = config.Bind(
+                "00c. Client - UI Scale",
+                "UiScaleWindows",
+                1.0f,
+                "Масштаб окон мода (0.1 - 5.0, по умолчанию 1.0). Управляет размером стола ставок казино, журнала событий забега и админ-меню."
+            );
+
+            UiScaleToasts = config.Bind(
+                "00c. Client - UI Scale",
+                "UiScaleToasts",
+                1.0f,
+                "Масштаб всплывающих уведомлений и тостов (0.1 - 5.0, по умолчанию 1.0). Управляет размером карточек событий в левом нижнем углу."
             );
 
             // ==========================================

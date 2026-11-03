@@ -63,7 +63,6 @@ namespace ItemRoulette.Configuration
                 AddOption(new SliderOption(ModConfig.AutoSpinDelay, new SliderConfig { min = 0.2f, max = 3.0f, FormatString = "{0:0.0}s" }), "ITEMROULETTE_CONFIG_AUTOSPINDELAY_NAME", "ITEMROULETTE_CONFIG_AUTOSPINDELAY_DESC", "ITEMROULETTE_CAT_00A");
                 AddOption(new CheckBoxOption(ModConfig.ShowChanceWidgetInUI), "ITEMROULETTE_CONFIG_SHOWCHANCEWIDGETINUI_NAME", "ITEMROULETTE_CONFIG_SHOWCHANCEWIDGETINUI_DESC", "ITEMROULETTE_CAT_00A");
                 AddOption(new CheckBoxOption(ModConfig.EnableItemDescriptionAdditions), "ITEMROULETTE_CONFIG_ENABLEITEMDESCRIPTIONADDITIONS_NAME", "ITEMROULETTE_CONFIG_ENABLEITEMDESCRIPTIONADDITIONS_DESC", "ITEMROULETTE_CAT_00A");
-                AddOption(new SliderOption(ModConfig.UiScale, new SliderConfig { min = 0.1f, max = 5.0f, FormatString = "{0:0.00}x" }), "ITEMROULETTE_CONFIG_UISCALE_NAME", "ITEMROULETTE_CONFIG_UISCALE_DESC", "ITEMROULETTE_CAT_00A");
 
                 // ==========================================
                 // 00b. Client - Controls & Hotkeys
@@ -75,6 +74,14 @@ namespace ItemRoulette.Configuration
                 AddOption(new KeyBindOption(ModConfig.AdminMenuHotkey), "ITEMROULETTE_CONFIG_ADMINMENUHOTKEY_NAME", "ITEMROULETTE_CONFIG_ADMINMENUHOTKEY_DESC", "ITEMROULETTE_CAT_00B");
                 AddOption(new KeyBindOption(ModConfig.CasinoToggleHotkey), "ITEMROULETTE_CONFIG_CASINOTOGGLEHOTKEY_NAME", "ITEMROULETTE_CONFIG_CASINOTOGGLEHOTKEY_DESC", "ITEMROULETTE_CAT_00B");
                 AddOption(new KeyBindOption(ModConfig.NotificationJournalHotkey), "ITEMROULETTE_CONFIG_NOTIFICATIONJOURNALHOTKEY_NAME", "ITEMROULETTE_CONFIG_NOTIFICATIONJOURNALHOTKEY_DESC", "ITEMROULETTE_CAT_00B");
+
+                // ==========================================
+                // 00c. Client - UI Scale
+                // ==========================================
+                AddOption(new SliderOption(ModConfig.UiScale, new SliderConfig { min = 0.1f, max = 5.0f, FormatString = "{0:0.00}x" }), "ITEMROULETTE_CONFIG_UISCALE_NAME", "ITEMROULETTE_CONFIG_UISCALE_DESC", "ITEMROULETTE_CAT_00C");
+                AddOption(new SliderOption(ModConfig.UiScaleRoulette, new SliderConfig { min = 0.1f, max = 5.0f, FormatString = "{0:0.00}x" }), "ITEMROULETTE_CONFIG_UISCALEROULETTE_NAME", "ITEMROULETTE_CONFIG_UISCALEROULETTE_DESC", "ITEMROULETTE_CAT_00C");
+                AddOption(new SliderOption(ModConfig.UiScaleWindows, new SliderConfig { min = 0.1f, max = 5.0f, FormatString = "{0:0.00}x" }), "ITEMROULETTE_CONFIG_UISCALEWINDOWS_NAME", "ITEMROULETTE_CONFIG_UISCALEWINDOWS_DESC", "ITEMROULETTE_CAT_00C");
+                AddOption(new SliderOption(ModConfig.UiScaleToasts, new SliderConfig { min = 0.1f, max = 5.0f, FormatString = "{0:0.00}x" }), "ITEMROULETTE_CONFIG_UISCALETOASTS_NAME", "ITEMROULETTE_CONFIG_UISCALETOASTS_DESC", "ITEMROULETTE_CAT_00C");
 
                 // ==========================================
                 // 01. Drop Suppression

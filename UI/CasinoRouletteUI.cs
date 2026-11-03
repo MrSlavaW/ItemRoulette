@@ -1027,7 +1027,7 @@ namespace ItemRoulette.UI
         // =========================================================================
         private void DrawTopReelBanner(HUD hud)
         {
-            using (GUIHelper.UseScale(GUIHelper.SafeUiScale, new Vector2(Screen.width / 2f, 0f)))
+            using (GUIHelper.UseScale(GUIHelper.SafeRouletteScale, new Vector2(Screen.width / 2f, 0f)))
             {
                 Rect boxRect = RouletteUI.GetInventoryFieldRect(hud);
 
@@ -1229,7 +1229,7 @@ namespace ItemRoulette.UI
         {
             if (_isWindowPosInitialized) return;
 
-            float scale = GUIHelper.SafeUiScale;
+            float scale = GUIHelper.SafeWindowsScale;
             float windowW = 948f;
             float windowH = 330f;
             float visualW = windowW * scale;
@@ -1264,7 +1264,7 @@ namespace ItemRoulette.UI
             }
             else if (_isDraggingWindow && Input.GetMouseButton(0))
             {
-                float scale = GUIHelper.SafeUiScale;
+                float scale = GUIHelper.SafeWindowsScale;
                 float visualW = _windowRect.width * scale;
                 float visualH = _windowRect.height * scale;
                 Vector2 offset = currentMouse - _dragMouseStart;
@@ -1345,7 +1345,7 @@ namespace ItemRoulette.UI
         {
             EnsureWindowPosition();
 
-            float scale = GUIHelper.SafeUiScale;
+            float scale = GUIHelper.SafeWindowsScale;
             using (GUIHelper.UseScale(scale, _windowRect.position))
             {
                 // Window Background & Gold Border

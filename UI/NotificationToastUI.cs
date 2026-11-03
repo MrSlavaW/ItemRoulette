@@ -78,7 +78,7 @@ namespace ItemRoulette.UI
                 // Position above character portrait / health area in bottom-left
                 float baseY = Screen.height - 180f;
 
-                using (GUIHelper.UseScale(GUIHelper.SafeUiScale, new Vector2(startX, baseY)))
+                using (GUIHelper.UseScale(GUIHelper.SafeToastsScale, new Vector2(startX, baseY)))
                 {
                     float cardWidth = Mathf.Clamp(Screen.width * 0.28f, 380f, 480f);
                     float spacing = 6f;

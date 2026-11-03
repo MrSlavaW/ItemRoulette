@@ -99,6 +99,9 @@ namespace ItemRoulette.UI
         }
 
         public static float SafeUiScale => Mathf.Clamp(ModConfig.UiScale?.Value ?? 1.0f, 0.1f, 5.0f);
+        public static float SafeRouletteScale => Mathf.Clamp(SafeUiScale * (ModConfig.UiScaleRoulette?.Value ?? 1.0f), 0.1f, 5.0f);
+        public static float SafeWindowsScale => Mathf.Clamp(SafeUiScale * (ModConfig.UiScaleWindows?.Value ?? 1.0f), 0.1f, 5.0f);
+        public static float SafeToastsScale => Mathf.Clamp(SafeUiScale * (ModConfig.UiScaleToasts?.Value ?? 1.0f), 0.1f, 5.0f);
 
         public readonly struct GuiScaleScope : System.IDisposable
         {

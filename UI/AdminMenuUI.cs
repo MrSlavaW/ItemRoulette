@@ -195,7 +195,7 @@ namespace ItemRoulette.UI
             {
                 InitStyles();
 
-                float scale = GUIHelper.SafeUiScale;
+                float scale = GUIHelper.SafeWindowsScale;
                 float baseW = 1040f;
                 float baseH = 640f;
                 float visualW = baseW * scale;

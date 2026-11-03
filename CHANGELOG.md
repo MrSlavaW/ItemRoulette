@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.5.4] - 2026-11-03
+### Granular UI Scaling Category & Independent Element Sizing:
+- **Dedicated UI Scaling Category (`00c. Client - UI Scale`)**:
+  - Moved UI scale settings into their own dedicated configuration category in `ModConfig` and RiskOfOptions.
+  - Added full English and Russian category localization (`ITEMROULETTE_CAT_00C`).
+- **Granular Multiplicative Scaling Sliders**:
+  - **Master UI Scale (`UiScale`)**: Global multiplier affecting all mod UI elements proportionally (0.1x to 5.0x, default 1.0x).
+  - **Roulette UI Scale (`UiScaleRoulette`)**: Independent scale for the top item reel, hint pill, hold bar, and Void decision modal (0.1x to 5.0x, default 1.0x).
+  - **Windows UI Scale (`UiScaleWindows`)**: Independent scale for all draggable/modal windows — Casino betting table, Run Event Log / Journal, and Chaos Admin Menu (0.1x to 5.0x, default 1.0x).
+  - **Notifications UI Scale (`UiScaleToasts`)**: Independent scale for toast notification cards in the bottom-left corner of the screen (0.1x to 5.0x, default 1.0x).
+- **Proportional Compounding**:
+  - Each element's effective scale compounds multiplicatively (`Master * Element`) while remaining clamped within safe boundaries (`0.1f` to `5.0f`), preserving anchor alignments and crisp rendering across all display setups.
+
 ## [1.5.3] - 2026-11-03
 ### UI Elements Scaling & High-Resolution Display Adaptation:
 - **Global UI Scale Setting (`UiScale`)**:

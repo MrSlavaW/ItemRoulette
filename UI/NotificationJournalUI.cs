@@ -73,7 +73,7 @@ namespace ItemRoulette.UI
         {
             if (!_isWindowPosInitialized)
             {
-                float scale = GUIHelper.SafeUiScale;
+                float scale = GUIHelper.SafeWindowsScale;
                 float visualW = _windowRect.width * scale;
                 float visualH = _windowRect.height * scale;
                 float x = Mathf.Max(20f, (Screen.width - visualW) / 2f);
@@ -166,7 +166,7 @@ namespace ItemRoulette.UI
             }
             else if (_isDragging && Input.GetMouseButton(0))
             {
-                float scale = GUIHelper.SafeUiScale;
+                float scale = GUIHelper.SafeWindowsScale;
                 float visualW = _windowRect.width * scale;
                 float visualH = _windowRect.height * scale;
                 Vector2 offset = currentMouse - _dragMouseStart;
@@ -211,7 +211,7 @@ namespace ItemRoulette.UI
                 InitStyles();
                 EnsureWindowPosition();
 
-                float scale = GUIHelper.SafeUiScale;
+                float scale = GUIHelper.SafeWindowsScale;
                 using (GUIHelper.UseScale(scale, _windowRect.position))
                 {
                     // 1. Window Background & Border

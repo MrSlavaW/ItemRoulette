@@ -1396,7 +1396,7 @@ namespace ItemRoulette.UI
 
                 InitStyles();
 
-                using (GUIHelper.UseScale(GUIHelper.SafeUiScale, new Vector2(Screen.width / 2f, 0f)))
+                using (GUIHelper.UseScale(GUIHelper.SafeRouletteScale, new Vector2(Screen.width / 2f, 0f)))
                 {
                     var hud = HUD.readOnlyInstanceList[0];
                     Rect boxRect = GetInventoryFieldRect(hud);
