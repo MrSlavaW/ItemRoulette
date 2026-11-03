@@ -81,13 +81,18 @@ namespace ItemRoulette.Core
                 string token = $"ITEMROULETTE_CHAOS_{Type}_DESC";
                 return Localization.Get(token, DescriptionRu, DescriptionEn);
             }
-            set { DescriptionRu = value; DescriptionEn = value; }
         }
 
         public void SetDescription(string ru, string en)
         {
             DescriptionRu = ru;
             DescriptionEn = en;
+        }
+
+        public void SetDescriptionFromToken(string token, params object[] args)
+        {
+            DescriptionRu = Localization.FormatForLang("ru", token, args);
+            DescriptionEn = Localization.FormatForLang("en", token, args);
         }
 
         public Color Color { get; set; }
@@ -756,7 +761,7 @@ namespace ItemRoulette.Core
                                 master.inventory.GiveItemPermanent(targetItem, 1);
                                 PushLocalPickupNotification(master, PickupCatalog.FindPickupIndex(targetItem));
                                 string itemName = GetItemName(targetItem);
-                                def.Description = $"Получена вторая копия: <b>{itemName}</b>!";
+                                def.SetDescriptionFromToken("ITEMROULETTE_CHAOS_DOUBLE_ITEM_RESULT", itemName);
                             }
                         }
                         break;
@@ -768,7 +773,7 @@ namespace ItemRoulette.Core
                             {
                                 RouletteManager.Instance.GrantTemporaryItems(master, targetItem, 10, 60f);
                                 string itemName = GetItemName(targetItem);
-                                def.Description = $"Получено +10 временных копий: <b>{itemName}</b> (на 60 сек)!";
+                                def.SetDescriptionFromToken("ITEMROULETTE_CHAOS_TEMP_DUPLICATES_RESULT", itemName);
                             }
                         }
                         break;
@@ -780,7 +785,7 @@ namespace ItemRoulette.Core
                             {
                                 RouletteManager.Instance.GrantSpectralItems(master, targetItem, 5);
                                 string itemName = GetItemName(targetItem);
-                                def.Description = $"Получено +5 спектральных копий: <b>{itemName}</b> (до конца этапа)!";
+                                def.SetDescriptionFromToken("ITEMROULETTE_CHAOS_SPECTRAL_DUPLICATES_RESULT", itemName);
                             }
                         }
                         break;
@@ -801,13 +806,13 @@ namespace ItemRoulette.Core
                         }
                         uint cashback = (uint)(currentRollCost * multiplier);
                         master.GiveMoney(cashback, true);
-                        def.Description = $"Возврат ${cashback} (x{multiplier} за {wonItem.TierLabel})!";
+                        def.SetDescriptionFromToken("ITEMROULETTE_CHAOS_QUALITY_CASHBACK_RESULT", cashback, multiplier, wonItem.TierLabel);
                         break;
 
                     case ChaosEventType.DoubleGold:
                         uint doubleAmount = master.money;
                         master.GiveMoney(doubleAmount, true);
-                        def.Description = $"Баланс золота удвоен (+${doubleAmount})!";
+                        def.SetDescriptionFromToken("ITEMROULETTE_CHAOS_DOUBLE_GOLD_RESULT", doubleAmount);
                         break;
 
                     case ChaosEventType.NextStageFreeRolls:
@@ -823,11 +828,11 @@ namespace ItemRoulette.Core
                         string mirroredName = MirrorAllyItem(master, wonItem.TierType);
                         if (!string.IsNullOrEmpty(mirroredName))
                         {
-                            def.Description = $"Скопирован предмет: <b>{mirroredName}</b>!";
+                            def.SetDescriptionFromToken("ITEMROULETTE_CHAOS_ALLY_MIRROR_RESULT", mirroredName);
                         }
                         else
                         {
-                            def.Description = "Скопирован предмет того же тира у напарника!";
+                            def.SetDescriptionFromToken("ITEMROULETTE_CHAOS_ALLY_MIRROR_DESC");
                         }
                         break;
 
@@ -844,27 +849,15 @@ namespace ItemRoulette.Core
                         break;
 
                     case ChaosEventType.ElementalAspectDrop:
-                        string aspectDesc = ExecuteElementalAspect(master);
-                        if (!string.IsNullOrEmpty(aspectDesc))
-                        {
-                            def.Description = aspectDesc;
-                        }
+                        ExecuteElementalAspect(master, def);
                         break;
 
                     case ChaosEventType.TierOddsBoost:
-                        string boostDesc = ExecuteTierOddsBoost(master);
-                        if (!string.IsNullOrEmpty(boostDesc))
-                        {
-                            def.Description = boostDesc;
-                        }
+                        ExecuteTierOddsBoost(master, def);
                         break;
 
                     case ChaosEventType.AlliedDroneSquad:
-                        string alliedDroneDesc = ExecuteAlliedDrones(master);
-                        if (!string.IsNullOrEmpty(alliedDroneDesc))
-                        {
-                            def.Description = alliedDroneDesc;
-                        }
+                        ExecuteAlliedDrones(master, def);
                         break;
 
                     case ChaosEventType.ForgeAnomaly:
@@ -874,11 +867,11 @@ namespace ItemRoulette.Core
                             string qName = QualityCompat.GetQualityName(newTier);
                             Color qCol = QualityCompat.GetQualityColor(newTier);
                             string qHex = ColorUtility.ToHtmlStringRGB(qCol);
-                            def.Description = Localization.Format("Предмет <b>{0}</b> перекован до уровня <color=#{1}><b>{2}</b></color>!", "Item <b>{0}</b> reforged to <color=#{1}><b>{2}</b></color> quality!", upName, qHex, qName);
+                            def.SetDescriptionFromToken("ITEMROULETTE_CHAOS_FORGE_ANOMALY_RESULT", upName, $"<color=#{qHex}><b>{qName}</b></color>");
                         }
                         else
                         {
-                            def.Description = Localization.Get("Кузнечная аномалия не нашла предметов для улучшения качества в инвентаре.", "Forge Anomaly found no eligible items to upgrade in inventory.");
+                            def.SetDescriptionFromToken("ITEMROULETTE_CHAOS_FORGE_ANOMALY_EMPTY");
                         }
                         break;
 
@@ -886,7 +879,7 @@ namespace ItemRoulette.Core
                     case ChaosEventType.LoseGold30:
                         uint lost = (uint)(master.money * 0.30f);
                         master.money -= lost;
-                        def.SetDescription($"Потеряно ${lost} (30% баланса)!", $"Lost ${lost} (30% of gold)!");
+                        def.SetDescriptionFromToken("ITEMROULETTE_CHAOS_LOSE_GOLD_RESULT", lost);
                         break;
 
                     case ChaosEventType.CostIncrease10:
@@ -896,20 +889,18 @@ namespace ItemRoulette.Core
 
                     case ChaosEventType.RandomLunarOrVoid:
                         TriggerMandatoryLunarVoidSpinServer(master);
-                        def.SetDescription(
-                            "Запущена обязательная фиолетово-синяя крутка!",
-                            "Triggered mandatory Void/Lunar roulette spin!");
+                        def.SetDescriptionFromToken("ITEMROULETTE_CHAOS_RANDOM_LUNAR_VOID_DESC");
                         break;
 
                     case ChaosEventType.TierDownSacrifice:
                         string sacName = SacrificeTierDownItem(master, wonItem.TierType);
                         if (!string.IsNullOrEmpty(sacName))
                         {
-                            def.SetDescription($"Потерян предмет: <color=#FF6666><b>{sacName}</b></color>!", $"Lost item: <color=#FF6666><b>{sacName}</b></color>!");
+                            def.SetDescriptionFromToken("ITEMROULETTE_CHAOS_TIER_DOWN_SACRIFICE_RESULT", sacName);
                         }
                         else
                         {
-                            def.SetDescription("Нет предметов подходящего тира для пожертвования!", "No eligible items of this tier to sacrifice!");
+                            def.SetDescriptionFromToken("ITEMROULETTE_CHAOS_TIER_DOWN_SACRIFICE_EMPTY");
                         }
                         break;
 
@@ -922,11 +913,11 @@ namespace ItemRoulette.Core
                         string curseName = GrantHallowedOrCurseItem(master);
                         if (!string.IsNullOrEmpty(curseName))
                         {
-                            def.SetDescription($"Получено проклятие: <color=#FF4444><b>{curseName}</b></color>!", $"Acquired curse: <color=#FF4444><b>{curseName}</b></color>!");
+                            def.SetDescriptionFromToken("ITEMROULETTE_CHAOS_HALLOWED_CURSE_RESULT", curseName);
                         }
                         else
                         {
-                            def.SetDescription("Получен предмет-проклятие!", "Acquired a cursed item!");
+                            def.SetDescriptionFromToken("ITEMROULETTE_CHAOS_HALLOWED_CURSE_DESC");
                         }
                         break;
 
@@ -978,43 +969,23 @@ namespace ItemRoulette.Core
                         break;
 
                     case ChaosEventType.RandomStageArtifact:
-                        string artDesc = ExecuteRandomStageArtifact(master);
-                        if (!string.IsNullOrEmpty(artDesc))
-                        {
-                            def.Description = artDesc;
-                        }
+                        ExecuteRandomStageArtifact(master, def);
                         break;
 
                     case ChaosEventType.CombatShrineX2:
-                        string csDesc = ExecuteCombatShrineX2(master);
-                        if (!string.IsNullOrEmpty(csDesc))
-                        {
-                            def.Description = csDesc;
-                        }
+                        ExecuteCombatShrineX2(master, def);
                         break;
 
                     case ChaosEventType.LowGravityMoonX2:
-                        string gravDesc = ExecuteLowGravityMoonX2(master);
-                        if (!string.IsNullOrEmpty(gravDesc))
-                        {
-                            def.Description = gravDesc;
-                        }
+                        ExecuteLowGravityMoonX2(master, def);
                         break;
 
                     case ChaosEventType.TierOddsPenalty:
-                        string penDesc = ExecuteTierOddsPenalty(master);
-                        if (!string.IsNullOrEmpty(penDesc))
-                        {
-                            def.Description = penDesc;
-                        }
+                        ExecuteTierOddsPenalty(master, def);
                         break;
 
                     case ChaosEventType.HostileDroneSquad:
-                        string hostileDroneDesc = ExecuteHostileDrones(master);
-                        if (!string.IsNullOrEmpty(hostileDroneDesc))
-                        {
-                            def.Description = hostileDroneDesc;
-                        }
+                        ExecuteHostileDrones(master, def);
                         break;
 
                     case ChaosEventType.VoidCorrosion:
@@ -1022,14 +993,14 @@ namespace ItemRoulette.Core
                         if (downgraded)
                         {
                             string targetTierStr = toTier == QualityTierCompat.None
-                                ? Localization.Get("Базовое (без качества)", "Base (No Quality)")
+                                ? Localization.Get("ITEMROULETTE_WORD_ITEM", "Базовое", "Base")
                                 : QualityCompat.GetQualityName(toTier);
                             string oldTierStr = QualityCompat.GetQualityName(oldTier);
-                            def.Description = Localization.Format("Предмет <color=#FF6666><b>{0}</b></color> подвергся порче: {1} -> {2}!", "Item <color=#FF6666><b>{0}</b></color> corrupted: {1} -> {2}!", downName, oldTierStr, targetTierStr);
+                            def.SetDescriptionFromToken("ITEMROULETTE_CHAOS_VOID_CORROSION_RESULT", downName, oldTierStr, targetTierStr);
                         }
                         else
                         {
-                            def.Description = Localization.Get("Коррозия пустоты не нашла качественных предметов в инвентаре и рассеялась!", "Void Corrosion found no high-quality items in inventory and dissipated!");
+                            def.SetDescriptionFromToken("ITEMROULETTE_CHAOS_VOID_CORROSION_EMPTY");
                         }
                         break;
                 }
@@ -1194,7 +1165,7 @@ namespace ItemRoulette.Core
                     }
                 }
                 return !string.IsNullOrEmpty(allyName) 
-                    ? Localization.Format("{0} (у {1})", "{0} (from {1})", itemName, allyName) 
+                    ? Localization.FormatToken("ITEMROULETTE_CHAOS_ALLY_MIRROR_FORMAT", itemName, allyName) 
                     : itemName;
             }
             else
@@ -1531,7 +1502,8 @@ namespace ItemRoulette.Core
                             var cloneBody = cloneMaster.GetBody();
                             if (cloneBody != null)
                             {
-                                cloneBody.subtitleNameToken = $"Спутник {summoner.GetBody()?.GetUserName() ?? "игрока"}";
+                                string companionOwner = summoner.GetBody()?.GetUserName() ?? Localization.Get("игрока", "player");
+                                cloneBody.subtitleNameToken = $"ITEMROULETTE_SUBTITLE_COMPANION:{companionOwner}";
                             }
                         }
                         else
@@ -1661,7 +1633,7 @@ namespace ItemRoulette.Core
             return ModConfig.AllowModdedArtifacts.Value;
         }
 
-        private static string ExecuteRandomStageArtifact(CharacterMaster master)
+        private static string ExecuteRandomStageArtifact(CharacterMaster master, ChaosEventDefinition? eventDef = null)
         {
             try
             {
@@ -1728,7 +1700,8 @@ namespace ItemRoulette.Core
 
                 if (chosen == null)
                 {
-                    return Localization.Get("Все возможные артефакты испытания уже активны на этом этапе!", "All available trial artifacts are already active on this stage!");
+                    eventDef?.SetDescriptionFromToken("ITEMROULETTE_CHAOS_STAGE_ARTIFACT_ALL_ACTIVE");
+                    return Localization.Get("ITEMROULETTE_CHAOS_STAGE_ARTIFACT_ALL_ACTIVE");
                 }
 
                 // Enable artifact
@@ -1748,12 +1721,14 @@ namespace ItemRoulette.Core
                 }
 
                 string artName = GetArtifactName(chosen);
-                return Localization.Format("На текущий этап активирован дебаф: <color=#FFAA00><b>«{0}»</b></color>!", "Trial artifact debuff activated for this stage: <color=#FFAA00><b>«{0}»</b></color>!", artName);
+                eventDef?.SetDescriptionFromToken("ITEMROULETTE_CHAOS_STAGE_ARTIFACT_DEBUFF", artName);
+                return Localization.FormatToken("ITEMROULETTE_CHAOS_STAGE_ARTIFACT_DEBUFF", artName);
             }
             catch (Exception ex)
             {
                 Debug.LogWarning($"[ItemRoulette] Exception in ExecuteRandomStageArtifact: {ex}");
-                return Localization.Get("Активирован случайный артефакт на этап!", "Activated a random stage artifact!");
+                eventDef?.SetDescriptionFromToken("ITEMROULETTE_CHAOS_STAGE_ARTIFACT_FALLBACK");
+                return Localization.Get("ITEMROULETTE_CHAOS_STAGE_ARTIFACT_FALLBACK");
             }
         }
 
@@ -1831,13 +1806,14 @@ namespace ItemRoulette.Core
             }
         }
 
-        public static string ExecuteCombatShrineX2(CharacterMaster master)
+        public static string ExecuteCombatShrineX2(CharacterMaster master, ChaosEventDefinition? eventDef = null)
         {
             if (!NetworkServer.active)
             {
                 // In multiplayer client: inform server host via network chat message
                 ServerEvents.Broadcast($"[ItemRoulette:TriggerCombatShrineX2:{master.netId}]");
-                return Localization.Get("Активирован Алтарь битвы х2!", "Activated Combat Shrine x2!");
+                eventDef?.SetDescriptionFromToken("ITEMROULETTE_CHAOS_COMBAT_SHRINE_CLIENT");
+                return Localization.Get("ITEMROULETTE_CHAOS_COMBAT_SHRINE_CLIENT");
             }
 
             try
@@ -1887,12 +1863,14 @@ namespace ItemRoulette.Core
                     TriggerSingleShrineWave(interactor, monsterCredit, shrine2);
                 }
 
-                return Localization.Get("Призвано двойное испытание монстров: <b>Алтарь битвы x2</b>!", "Summoned a double-wave monster challenge: <b>Combat Shrine x2</b>!");
+                eventDef?.SetDescriptionFromToken("ITEMROULETTE_CHAOS_COMBAT_SHRINE_CHALLENGE");
+                return Localization.Get("ITEMROULETTE_CHAOS_COMBAT_SHRINE_CHALLENGE");
             }
             catch (Exception ex)
             {
                 Debug.LogWarning($"[ItemRoulette] Exception in ExecuteCombatShrineX2: {ex}");
-                return Localization.Get("Призван Алтарь битвы x2!", "Summoned Combat Shrine x2!");
+                eventDef?.SetDescriptionFromToken("ITEMROULETTE_CHAOS_COMBAT_SHRINE_FALLBACK");
+                return Localization.Get("ITEMROULETTE_CHAOS_COMBAT_SHRINE_FALLBACK");
             }
         }
 
@@ -2023,9 +2001,13 @@ namespace ItemRoulette.Core
             return list;
         }
 
-        public static string ExecuteElementalAspect(CharacterMaster master)
+        public static string ExecuteElementalAspect(CharacterMaster master, ChaosEventDefinition? eventDef = null)
         {
-            if (master == null) return "Получен элементальный аспект!";
+            if (master == null)
+            {
+                eventDef?.SetDescriptionFromToken("ITEMROULETTE_CHAOS_ASPECT_FALLBACK");
+                return Localization.Get("ITEMROULETTE_CHAOS_ASPECT_FALLBACK");
+            }
 
             // 1. If ZetAspects mod is installed and integration is enabled, award aspect as passive item!
             if (ZetAspectsCompat.IsZetAspectsLoaded && ModConfig.EnableZetAspectsIntegration.Value)
@@ -2055,7 +2037,7 @@ namespace ItemRoulette.Core
                         chosenItem = aspectItems[UnityEngine.Random.Range(0, aspectItems.Count)];
                     }
                     var itemDef = ItemCatalog.GetItemDef(chosenItem);
-                    string aspectName = itemDef != null ? Language.GetString(itemDef.nameToken) : "Элементальный Аспект";
+                    string aspectName = itemDef != null ? Language.GetString(itemDef.nameToken) : Localization.Get("Элементальный Аспект", "Elemental Aspect");
 
                     if (NetworkServer.active)
                     {
@@ -2066,7 +2048,8 @@ namespace ItemRoulette.Core
                         ServerEvents.Broadcast($"[ItemRoulette:GrantAspectItem:{(int)chosenItem}:{master.netId.Value}]");
                     }
 
-                    return Localization.Format("Получен элементальный аспект: <color=#FFE853><b>{0}</b></color>!", "Acquired elemental aspect: <color=#FFE853><b>{0}</b></color>!", aspectName);
+                    eventDef?.SetDescriptionFromToken("ITEMROULETTE_CHAOS_ASPECT_RESULT", aspectName);
+                    return Localization.FormatToken("ITEMROULETTE_CHAOS_ASPECT_RESULT", aspectName);
                 }
             }
 
@@ -2074,7 +2057,8 @@ namespace ItemRoulette.Core
             var aspects = GetAvailableEliteAspects();
             if (aspects == null || aspects.Count == 0)
             {
-                return Localization.Get("Элементальные сферы не найдены!", "No elemental aspects found!");
+                eventDef?.SetDescriptionFromToken("ITEMROULETTE_CHAOS_ASPECT_NOT_FOUND");
+                return Localization.Get("ITEMROULETTE_CHAOS_ASPECT_NOT_FOUND");
             }
 
             EquipmentIndex chosen = aspects[UnityEngine.Random.Range(0, aspects.Count)];
@@ -2091,7 +2075,8 @@ namespace ItemRoulette.Core
                 ServerEvents.Broadcast($"[ItemRoulette:GrantElementalAspect:{(int)chosen}:{master.netId.Value}]");
             }
 
-            return Localization.Format("Получена элементальная сфера: <color=#FFE853><b>{0}</b></color>!", "Acquired elemental aspect: <color=#FFE853><b>{0}</b></color>!", vanillaAspectName);
+            eventDef?.SetDescriptionFromToken("ITEMROULETTE_CHAOS_ASPECT_EQUIP_RESULT", vanillaAspectName);
+            return Localization.FormatToken("ITEMROULETTE_CHAOS_ASPECT_EQUIP_RESULT", vanillaAspectName);
         }
 
         public static void ExecuteGrantAspectItemServer(CharacterMaster master, ItemIndex chosenItem)
@@ -2148,7 +2133,7 @@ namespace ItemRoulette.Core
             PushLocalPickupNotification(master, PickupCatalog.FindPickupIndex(chosenAspect));
         }
 
-        public static string ExecuteLowGravityMoonX2(CharacterMaster master)
+        public static string ExecuteLowGravityMoonX2(CharacterMaster master, ChaosEventDefinition? eventDef = null)
         {
             float targetGravity = ModConfig.LowGravityValue.Value;
             RouletteManager.Instance.ApplyStageLowGravity(targetGravity);
@@ -2156,12 +2141,17 @@ namespace ItemRoulette.Core
             // In multiplayer, broadcast network tag so all clients sync Physics.gravity
             ServerEvents.Broadcast($"[ItemRoulette:SetStageGravity:{targetGravity.ToString(System.Globalization.CultureInfo.InvariantCulture)}]");
 
-            return Localization.Format("На текущий этап гравитация критически снижена: <b>Лунная гравитация x2 ({0:F1})</b>!", "Stage gravity drastically lowered: <b>Lunar Low Gravity x2 ({0:F1})</b>!", targetGravity);
+            eventDef?.SetDescriptionFromToken("ITEMROULETTE_CHAOS_LOW_GRAVITY_RESULT", targetGravity);
+            return Localization.FormatToken("ITEMROULETTE_CHAOS_LOW_GRAVITY_RESULT", targetGravity);
         }
 
-        public static string ExecuteTierOddsBoost(CharacterMaster master)
+        public static string ExecuteTierOddsBoost(CharacterMaster master, ChaosEventDefinition? eventDef = null)
         {
-            if (master == null) return Localization.Get("Шансы редких предметов повышены!", "Rare item odds boosted!");
+            if (master == null)
+            {
+                eventDef?.SetDescriptionFromToken("ITEMROULETTE_CHAOS_TIER_ODDS_BOOST_FALLBACK");
+                return Localization.Get("ITEMROULETTE_CHAOS_TIER_ODDS_BOOST_FALLBACK");
+            }
 
             float oldMult = RouletteManager.Instance.GetPlayerTierMultiplier(master);
             float newMult = Mathf.Min(4.0f, oldMult * ModConfig.TierOddsBoostMultiplier.Value);
@@ -2172,12 +2162,17 @@ namespace ItemRoulette.Core
             // In multiplayer, broadcast network tag so all clients sync personal multiplier
             ServerEvents.Broadcast($"[ItemRoulette:SetPlayerTierLuck:{netId}:{newMult.ToString(System.Globalization.CultureInfo.InvariantCulture)}]");
 
-            return Localization.Format("Шансы зелёных, красных и босс-вещей повышены до конца этапа (<b>x{0:F2}</b>)!", "Uncommon, Legendary, and Boss item odds boosted until stage end (<b>x{0:F2}</b>)!", newMult);
+            eventDef?.SetDescriptionFromToken("ITEMROULETTE_CHAOS_TIER_ODDS_BOOST_RESULT", newMult);
+            return Localization.FormatToken("ITEMROULETTE_CHAOS_TIER_ODDS_BOOST_RESULT", newMult);
         }
 
-        public static string ExecuteTierOddsPenalty(CharacterMaster master)
+        public static string ExecuteTierOddsPenalty(CharacterMaster master, ChaosEventDefinition? eventDef = null)
         {
-            if (master == null) return Localization.Get("Шансы редких предметов понижены!", "Rare item odds penalized!");
+            if (master == null)
+            {
+                eventDef?.SetDescriptionFromToken("ITEMROULETTE_CHAOS_TIER_ODDS_PENALTY_FALLBACK");
+                return Localization.Get("ITEMROULETTE_CHAOS_TIER_ODDS_PENALTY_FALLBACK");
+            }
 
             float oldMult = RouletteManager.Instance.GetPlayerTierMultiplier(master);
             float newMult = Mathf.Max(0.20f, oldMult * ModConfig.TierOddsPenaltyMultiplier.Value);
@@ -2188,7 +2183,8 @@ namespace ItemRoulette.Core
             // In multiplayer, broadcast network tag so all clients sync personal multiplier
             ServerEvents.Broadcast($"[ItemRoulette:SetPlayerTierLuck:{netId}:{newMult.ToString(System.Globalization.CultureInfo.InvariantCulture)}]");
 
-            return Localization.Format("Шансы зелёных, красных и босс-вещей понижены до конца этапа (<b>x{0:F2}</b>)!", "Uncommon, Legendary, and Boss item odds penalized until stage end (<b>x{0:F2}</b>)!", newMult);
+            eventDef?.SetDescriptionFromToken("ITEMROULETTE_CHAOS_TIER_ODDS_PENALTY_RESULT", newMult);
+            return Localization.FormatToken("ITEMROULETTE_CHAOS_TIER_ODDS_PENALTY_RESULT", newMult);
         }
 
         public class DroneSquadOption
@@ -2372,9 +2368,13 @@ namespace ItemRoulette.Core
             return null;
         }
 
-        public static string ExecuteAlliedDrones(CharacterMaster master)
+        public static string ExecuteAlliedDrones(CharacterMaster master, ChaosEventDefinition? eventDef = null)
         {
-            if (master == null) return "Призваны союзные дроны поддержки!";
+            if (master == null)
+            {
+                eventDef?.SetDescriptionFromToken("ITEMROULETTE_CHAOS_ALLIED_DRONES_FALLBACK");
+                return Localization.Get("ITEMROULETTE_CHAOS_ALLIED_DRONES_FALLBACK");
+            }
 
             var options = GetAlliedDroneOptions();
             int choiceIndex = UnityEngine.Random.Range(0, options.Count);
@@ -2390,12 +2390,23 @@ namespace ItemRoulette.Core
                 ServerEvents.Broadcast($"[ItemRoulette:SpawnAlliedDrones:{netId}:{choiceIndex}]");
             }
 
-            return Localization.Format("Призван союзный отряд: <color=#4ADE80><b>{0}</b> (x{1})</color>!", "Summoned allied support squad: <color=#4ADE80><b>{0}</b> (x{1})</color>!", choice.Name, choice.Count);
+            if (eventDef != null)
+            {
+                eventDef.SetDescription(
+                    Localization.FormatForLang("ru", "ITEMROULETTE_CHAOS_ALLIED_DRONES_RESULT", choice.NameRu, choice.Count),
+                    Localization.FormatForLang("en", "ITEMROULETTE_CHAOS_ALLIED_DRONES_RESULT", choice.NameEn, choice.Count));
+            }
+
+            return Localization.FormatToken("ITEMROULETTE_CHAOS_ALLIED_DRONES_RESULT", choice.Name, choice.Count);
         }
 
-        public static string ExecuteHostileDrones(CharacterMaster master)
+        public static string ExecuteHostileDrones(CharacterMaster master, ChaosEventDefinition? eventDef = null)
         {
-            if (master == null) return Localization.Get("Призваны враждебные боевые дроны!", "Summoned hostile combat drones!");
+            if (master == null)
+            {
+                eventDef?.SetDescriptionFromToken("ITEMROULETTE_CHAOS_HOSTILE_DRONES_FALLBACK");
+                return Localization.Get("ITEMROULETTE_CHAOS_HOSTILE_DRONES_FALLBACK");
+            }
 
             var options = GetHostileDroneOptions();
             int choiceIndex = UnityEngine.Random.Range(0, options.Count);
@@ -2411,13 +2422,20 @@ namespace ItemRoulette.Core
                 ServerEvents.Broadcast($"[ItemRoulette:SpawnHostileDrones:{netId}:{choiceIndex}]");
             }
 
+            if (eventDef != null)
+            {
+                eventDef.SetDescription(
+                    Localization.FormatForLang("ru", "ITEMROULETTE_CHAOS_HOSTILE_DRONES_RESULT", choice.NameRu, choice.Count),
+                    Localization.FormatForLang("en", "ITEMROULETTE_CHAOS_HOSTILE_DRONES_RESULT", choice.NameEn, choice.Count));
+            }
+
             float stunSec = ModConfig.HostileDroneStunDuration != null ? ModConfig.HostileDroneStunDuration.Value : 10f;
             if (stunSec > 0f)
             {
                 return Localization.Format("Призваны враждебные дроны: <color=#FF4444><b>{0}</b> (x{1})</color>! Системы дронов перезагружаются ({2:0} сек)...", "Summoned hostile rogue drones: <color=#FF4444><b>{0}</b> (x{1})</color>! Drone systems rebooting ({2:0}s)...", choice.Name, choice.Count, stunSec);
             }
 
-            return Localization.Format("Призваны враждебные дроны: <color=#FF4444><b>{0}</b> (x{1})</color>!", "Summoned hostile rogue drones: <color=#FF4444><b>{0}</b> (x{1})</color>!", choice.Name, choice.Count);
+            return Localization.FormatToken("ITEMROULETTE_CHAOS_HOSTILE_DRONES_RESULT", choice.Name, choice.Count);
         }
 
         public static void ExecuteAlliedDronesServer(CharacterMaster summoner, int choiceIndex)
@@ -2486,7 +2504,8 @@ namespace ItemRoulette.Core
                     var droneBody = minionMaster.GetBody();
                     if (droneBody != null)
                     {
-                        droneBody.subtitleNameToken = $"Дрон {summoner.GetBody()?.GetUserName() ?? "игрока"}";
+                        string droneOwner = summoner.GetBody()?.GetUserName() ?? Localization.Get("игрока", "player");
+                        droneBody.subtitleNameToken = $"ITEMROULETTE_SUBTITLE_DRONE:{droneOwner}";
                     }
                 }
             }
@@ -2573,11 +2592,11 @@ namespace ItemRoulette.Core
                                 if (droneBody.skillLocator.utility != null) droneBody.skillLocator.utility.enabled = false;
                                 if (droneBody.skillLocator.special != null) droneBody.skillLocator.special.enabled = false;
                             }
-                            droneBody.subtitleNameToken = Localization.Get("Враждебный дрон (Перезагрузка...)", "Hostile Drone (Rebooting...)");
+                            droneBody.subtitleNameToken = "ITEMROULETTE_SUBTITLE_HOSTILE_DRONE_REBOOTING";
                         }
                         else
                         {
-                            droneBody.subtitleNameToken = Localization.Get("Враждебный дрон", "Hostile Drone");
+                            droneBody.subtitleNameToken = "ITEMROULETTE_SUBTITLE_HOSTILE_DRONE";
                         }
                     }
                 }

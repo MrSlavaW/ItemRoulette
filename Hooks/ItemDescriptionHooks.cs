@@ -19,6 +19,7 @@ namespace ItemRoulette.Hooks
             if (_initialized) return;
 
             On.RoR2.Language.GetLocalizedStringByToken += OnGetLocalizedStringByToken;
+            On.RoR2.CharacterBody.GetSubtitle += OnGetSubtitle;
 
             _initialized = true;
         }
@@ -28,8 +29,31 @@ namespace ItemRoulette.Hooks
             if (!_initialized) return;
 
             On.RoR2.Language.GetLocalizedStringByToken -= OnGetLocalizedStringByToken;
+            On.RoR2.CharacterBody.GetSubtitle -= OnGetSubtitle;
 
             _initialized = false;
+        }
+
+        private static string OnGetSubtitle(On.RoR2.CharacterBody.orig_GetSubtitle orig, CharacterBody self)
+        {
+            if (self != null && !string.IsNullOrEmpty(self.subtitleNameToken))
+            {
+                if (self.subtitleNameToken.StartsWith("ITEMROULETTE_SUBTITLE_COMPANION:"))
+                {
+                    string owner = self.subtitleNameToken.Substring("ITEMROULETTE_SUBTITLE_COMPANION:".Length);
+                    return Localization.FormatToken("ITEMROULETTE_SUBTITLE_COMPANION", owner);
+                }
+                if (self.subtitleNameToken.StartsWith("ITEMROULETTE_SUBTITLE_DRONE:"))
+                {
+                    string owner = self.subtitleNameToken.Substring("ITEMROULETTE_SUBTITLE_DRONE:".Length);
+                    return Localization.FormatToken("ITEMROULETTE_SUBTITLE_DRONE", owner);
+                }
+                if (self.subtitleNameToken.StartsWith("ITEMROULETTE_"))
+                {
+                    return Localization.Get(self.subtitleNameToken);
+                }
+            }
+            return orig(self);
         }
 
         private static string OnGetLocalizedStringByToken(On.RoR2.Language.orig_GetLocalizedStringByToken orig, RoR2.Language self, string token)

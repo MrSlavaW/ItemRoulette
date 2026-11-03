@@ -133,6 +133,7 @@
         "ITEMROULETTE_SUBTITLE_COMPANION": "{0}'s Companion",
         "ITEMROULETTE_SUBTITLE_DRONE": "{0}'s Drone",
         "ITEMROULETTE_SUBTITLE_HOSTILE_DRONE": "Hostile Drone",
+        "ITEMROULETTE_SUBTITLE_HOSTILE_DRONE_REBOOTING": "Hostile Drone (Rebooting...)",
         "ITEMROULETTE_TOAST_FREE_ROLL": "[ROULETTE] +{0} free spin!",
         "ITEMROULETTE_TOAST_FREE_ROLL_ALL": "[ROULETTE] +{0} free spin for everyone!",
         "ITEMROULETTE_TOAST_FREE_LEGENDARY": "[LEGENDARY CASE] Received {0} free Red spins!",

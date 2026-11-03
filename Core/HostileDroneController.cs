@@ -76,11 +76,11 @@ namespace ItemRoulette.Core
                     _body.AddTimedBuff(RoR2Content.Buffs.Nullified, _stunRemaining);
                 }
 
-                _body.subtitleNameToken = Localization.Get("Враждебный дрон (Перезагрузка...)", "Hostile Drone (Rebooting...)");
+                _body.subtitleNameToken = "ITEMROULETTE_SUBTITLE_HOSTILE_DRONE_REBOOTING";
             }
             else
             {
-                _body.subtitleNameToken = Localization.Get("Враждебный дрон", "Hostile Drone");
+                _body.subtitleNameToken = "ITEMROULETTE_SUBTITLE_HOSTILE_DRONE";
             }
         }
 
@@ -200,7 +200,7 @@ namespace ItemRoulette.Core
 
             if (_body != null)
             {
-                _body.subtitleNameToken = Localization.Get("Враждебный дрон", "Hostile Drone");
+                _body.subtitleNameToken = "ITEMROULETTE_SUBTITLE_HOSTILE_DRONE";
                 Util.PlaySound("Play_drone_alert", _body.gameObject);
             }
         }

@@ -133,6 +133,7 @@
         "ITEMROULETTE_SUBTITLE_COMPANION": "Спутник {0}",
         "ITEMROULETTE_SUBTITLE_DRONE": "Дрон {0}",
         "ITEMROULETTE_SUBTITLE_HOSTILE_DRONE": "Враждебный дрон",
+        "ITEMROULETTE_SUBTITLE_HOSTILE_DRONE_REBOOTING": "Враждебный дрон (Перезагрузка...)",
         "ITEMROULETTE_TOAST_FREE_ROLL": "[РУЛЕТКА] +{0} бесплатная крутка!",
         "ITEMROULETTE_TOAST_FREE_ROLL_ALL": "[РУЛЕТКА] +{0} бесплатная крутка для всех!",
         "ITEMROULETTE_TOAST_FREE_LEGENDARY": "[ЛЕГЕНДАРНЫЙ КЕЙС] Получено {0} бесплатных красных круток!",

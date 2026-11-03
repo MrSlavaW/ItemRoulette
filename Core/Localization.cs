@@ -158,6 +158,44 @@ namespace ItemRoulette.Core
         }
 
         /// <summary>
+        /// Retrieves fallback token value for a specific language ("ru" or "en").
+        /// </summary>
+        public static string GetForLang(string lang, string token)
+        {
+            if (string.IsNullOrEmpty(token)) return string.Empty;
+
+            var target = (lang != null && lang.StartsWith("ru", StringComparison.OrdinalIgnoreCase))
+                ? _fallbackTokensRu
+                : _fallbackTokensEn;
+
+            lock (target)
+            {
+                if (target.TryGetValue(token, out string? val) && !string.IsNullOrEmpty(val))
+                {
+                    return val;
+                }
+            }
+
+            return token;
+        }
+
+        /// <summary>
+        /// Formats a token for a specific language ("ru" or "en").
+        /// </summary>
+        public static string FormatForLang(string lang, string token, params object[] args)
+        {
+            string template = GetForLang(lang, token);
+            try
+            {
+                return string.Format(template, args);
+            }
+            catch
+            {
+                return template;
+            }
+        }
+
+        /// <summary>
         /// Explicit token-based formatting using RoR2 game engine localization with safe fallback.
         /// </summary>
         public static string FormatToken(string token, params object[] args)

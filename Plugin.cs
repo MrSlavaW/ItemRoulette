@@ -37,7 +37,7 @@ namespace ItemRoulette
             RouletteArtifact.Register();
             RouletteGate.Init();
 
-            Logger.LogInfo($"[{PluginName} v{PluginVersion}] Все модули успешно загружены! Рулетка: [{ModConfig.HotkeyKey}], Казино: [{ModConfig.CasinoToggleHotkeyKey}], Админ: [{ModConfig.AdminMenuHotkeyKey}]");
+            Logger.LogInfo($"[{PluginName} v{PluginVersion}] All modules successfully loaded! Roulette: [{ModConfig.HotkeyKey}], Casino: [{ModConfig.CasinoToggleHotkeyKey}], Admin: [{ModConfig.AdminMenuHotkeyKey}]");
         }
 
         private void OnDestroy()
