@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.5.2] - 2026-11-03
+### Native Permanent Curse Penalty & Admin Menu Sync Fix:
+- **Native Max Health Penalty for Void/Lunar Item Declines**:
+  - Replaced custom IL hooks on `CharacterBody.RecalculateStats` with the native engine buff `RoR2Content.Buffs.PermanentCurse` (the Eclipse 8 / Void Collapse stacking curse buff).
+  - Dynamically calculates the required curse stacks based on decline penalty percentage ($\text{targetCurse} = \frac{1}{1 - \text{fraction}}$).
+  - Natively synchronizes across all clients via UNet syncvars, cleanly reduces Max HP, and renders the native diagonal striped curse overlay on the right of the client health bar.
+  - Automatically persists across intra-stage body respawns (Dio's Best Friend, Larva) via `CharacterBody.onBodyStartGlobal` and cleans up on stage transitions.
+- **Admin Menu Roll Duplication Fix**:
+  - Fixed an issue in `AdminMenuUI` where clicking `+5 Free`, `+1 Red`, or `+1 Void` dispatched the action to the server while simultaneously incrementing local client counters, causing the HUD to display double the actual available spins (e.g., showing 12 when 6 were granted).
+- **Website URL**:
+  - Updated mod manifest website URL to official GitHub repository: `https://github.com/MrSlavaW/ItemRoulette`.
+
 ## [1.5.1] - 2026-11-03
 ### Upstream Localization Hotfix & Networked Subtitle Tokens (Videowiz92 Upstream Parity):
 - **Chaos Events Description Overwrite Fix**:

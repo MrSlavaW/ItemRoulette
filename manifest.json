@@ -1,6 +1,6 @@
 {
   "name": "ItemRoulette",
-  "version_number": "1.5.1",
+  "version_number": "1.5.2",
   "website_url": "https://github.com/MrSlavaW/ItemRoulette",
   "description": "Risk of Rain 2 item acquisition overhaul: HUD item reel, Artifact of the Roulette, European Casino Roulette, Life Bet, and Chaos Event mechanics.",
   "dependencies": [
