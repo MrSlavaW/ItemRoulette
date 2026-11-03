@@ -95,3 +95,11 @@ Found a bug, want to suggest new Chaos Events, or discuss balance? Join our comm
 
 - **Discord**: [Join our Discord Server](https://discord.gg/mpHBdhMBVY) (`https://discord.gg/mpHBdhMBVY`)
 - When reporting bugs, please include your BepInEx log file (`BepInEx/LogOutput.log`) and a brief description of what happened.
+
+---
+
+## 💖 Special Thanks / Credits
+
+A heartfelt special thanks for invaluable assistance and support:
+- **Videowiz92**
+
