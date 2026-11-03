@@ -77,52 +77,56 @@ namespace ItemRoulette.UI
                 float startX = 24f;
                 // Position above character portrait / health area in bottom-left
                 float baseY = Screen.height - 180f;
-                float cardWidth = Mathf.Clamp(Screen.width * 0.28f, 380f, 480f);
-                float spacing = 6f;
-                float currentY = baseY;
 
-                for (int i = 0; i < toasts.Count; i++)
+                using (GUIHelper.UseScale(GUIHelper.SafeUiScale, new Vector2(startX, baseY)))
                 {
-                    var toast = toasts[i];
-                    float alpha = toast.Alpha;
-                    if (alpha <= 0.01f) continue;
+                    float cardWidth = Mathf.Clamp(Screen.width * 0.28f, 380f, 480f);
+                    float spacing = 6f;
+                    float currentY = baseY;
 
-                    // Calculate height dynamically
-                    string msg = toast.Entry.Message;
-                    float textH = _contentStyle!.CalcHeight(new GUIContent(msg), cardWidth - 28f);
-                    float cardH = Mathf.Max(38f, 18f + textH + 4f);
+                    for (int i = 0; i < toasts.Count; i++)
+                    {
+                        var toast = toasts[i];
+                        float alpha = toast.Alpha;
+                        if (alpha <= 0.01f) continue;
 
-                    currentY -= cardH;
-                    Rect cardRect = new Rect(startX + toast.SlideOffset, currentY, cardWidth, cardH);
-                    currentY -= spacing;
+                        // Calculate height dynamically
+                        string msg = toast.Entry.Message;
+                        float textH = _contentStyle!.CalcHeight(new GUIContent(msg), cardWidth - 28f);
+                        float cardH = Mathf.Max(38f, 18f + textH + 4f);
 
-                    // 1. Dark Glass Background
-                    Color bg = new Color(0.05f, 0.07f, 0.11f, 0.94f * alpha);
-                    GUIHelper.DrawRect(cardRect, bg);
+                        currentY -= cardH;
+                        Rect cardRect = new Rect(startX + toast.SlideOffset, currentY, cardWidth, cardH);
+                        currentY -= spacing;
 
-                    // 2. Left Accent Stripe (thickness 4px)
-                    Color stripeCol = new Color(toast.Entry.AccentColor.r, toast.Entry.AccentColor.g, toast.Entry.AccentColor.b, 0.98f * alpha);
-                    Rect stripeRect = new Rect(cardRect.x, cardRect.y, 4f, cardRect.height);
-                    GUIHelper.DrawRect(stripeRect, stripeCol);
+                        // 1. Dark Glass Background
+                        Color bg = new Color(0.05f, 0.07f, 0.11f, 0.94f * alpha);
+                        GUIHelper.DrawRect(cardRect, bg);
 
-                    // 3. Subtle Outer Border
-                    Color borderCol = new Color(toast.Entry.AccentColor.r * 0.7f, toast.Entry.AccentColor.g * 0.7f, toast.Entry.AccentColor.b * 0.7f, 0.35f * alpha);
-                    GUIHelper.DrawBorder(cardRect, borderCol, 1);
+                        // 2. Left Accent Stripe (thickness 4px)
+                        Color stripeCol = new Color(toast.Entry.AccentColor.r, toast.Entry.AccentColor.g, toast.Entry.AccentColor.b, 0.98f * alpha);
+                        Rect stripeRect = new Rect(cardRect.x, cardRect.y, 4f, cardRect.height);
+                        GUIHelper.DrawRect(stripeRect, stripeCol);
 
-                    // 4. Header Badge: [Time | Stage | Initiator] + Category Icon
-                    string icon = GetCategoryIcon(toast.Entry.Category);
-                    string categoryName = GetCategoryNameSafe(toast.Entry.Category);
-                    string serverName = Localization.Get("ITEMROULETTE_INITIATOR_SERVER");
-                    string initName = !string.IsNullOrEmpty(toast.Entry.Initiator) ? toast.Entry.Initiator : serverName;
-                    string initColor = string.Equals(initName, serverName, StringComparison.OrdinalIgnoreCase) ? "#94A3B8" : "#38BDF8";
-                    string badgeText = $"<color=#{ColorUtility.ToHtmlStringRGB(toast.Entry.AccentColor)}>{icon} {categoryName}</color>  <color=#64748B>•</color>  <color=#94A3B8>[{toast.Entry.TimeFormatted} | {toast.Entry.StageFormatted} | <color={initColor}>{initName}</color>]</color>";
+                        // 3. Subtle Outer Border
+                        Color borderCol = new Color(toast.Entry.AccentColor.r * 0.7f, toast.Entry.AccentColor.g * 0.7f, toast.Entry.AccentColor.b * 0.7f, 0.35f * alpha);
+                        GUIHelper.DrawBorder(cardRect, borderCol, 1);
 
-                    Rect badgeRect = new Rect(cardRect.x + 12f, cardRect.y + 4f, cardWidth - 20f, 15f);
-                    GUI.Label(badgeRect, badgeText, _badgeStyle!);
+                        // 4. Header Badge: [Time | Stage | Initiator] + Category Icon
+                        string icon = GetCategoryIcon(toast.Entry.Category);
+                        string categoryName = GetCategoryNameSafe(toast.Entry.Category);
+                        string serverName = Localization.Get("ITEMROULETTE_INITIATOR_SERVER");
+                        string initName = !string.IsNullOrEmpty(toast.Entry.Initiator) ? toast.Entry.Initiator : serverName;
+                        string initColor = string.Equals(initName, serverName, StringComparison.OrdinalIgnoreCase) ? "#94A3B8" : "#38BDF8";
+                        string badgeText = $"<color=#{ColorUtility.ToHtmlStringRGB(toast.Entry.AccentColor)}>{icon} {categoryName}</color>  <color=#64748B>•</color>  <color=#94A3B8>[{toast.Entry.TimeFormatted} | {toast.Entry.StageFormatted} | <color={initColor}>{initName}</color>]</color>";
 
-                    // 5. Message Content
-                    Rect msgRect = new Rect(cardRect.x + 12f, cardRect.y + 19f, cardWidth - 20f, cardH - 22f);
-                    GUI.Label(msgRect, msg, _contentStyle!);
+                        Rect badgeRect = new Rect(cardRect.x + 12f, cardRect.y + 4f, cardWidth - 20f, 15f);
+                        GUI.Label(badgeRect, badgeText, _badgeStyle!);
+
+                        // 5. Message Content
+                        Rect msgRect = new Rect(cardRect.x + 12f, cardRect.y + 19f, cardWidth - 20f, cardH - 22f);
+                        GUI.Label(msgRect, msg, _contentStyle!);
+                    }
                 }
             }
             catch (Exception ex)

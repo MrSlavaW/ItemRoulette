@@ -73,8 +73,11 @@ namespace ItemRoulette.UI
         {
             if (!_isWindowPosInitialized)
             {
-                float x = Mathf.Max(20f, (Screen.width - _windowRect.width) / 2f);
-                float y = Mathf.Max(30f, (Screen.height - _windowRect.height) / 2f);
+                float scale = GUIHelper.SafeUiScale;
+                float visualW = _windowRect.width * scale;
+                float visualH = _windowRect.height * scale;
+                float x = Mathf.Max(20f, (Screen.width - visualW) / 2f);
+                float y = Mathf.Max(30f, (Screen.height - visualH) / 2f);
                 _windowRect.position = new Vector2(x, y);
                 _isWindowPosInitialized = true;
             }
@@ -163,9 +166,12 @@ namespace ItemRoulette.UI
             }
             else if (_isDragging && Input.GetMouseButton(0))
             {
+                float scale = GUIHelper.SafeUiScale;
+                float visualW = _windowRect.width * scale;
+                float visualH = _windowRect.height * scale;
                 Vector2 offset = currentMouse - _dragMouseStart;
-                float newX = Mathf.Clamp(_dragWindowStart.x + offset.x, 0, Mathf.Max(0, Screen.width - _windowRect.width));
-                float newY = Mathf.Clamp(_dragWindowStart.y + offset.y, 0, Mathf.Max(0, Screen.height - _windowRect.height));
+                float newX = Mathf.Clamp(_dragWindowStart.x + offset.x, 0, Mathf.Max(0, Screen.width - visualW));
+                float newY = Mathf.Clamp(_dragWindowStart.y + offset.y, 0, Mathf.Max(0, Screen.height - visualH));
                 _windowRect.position = new Vector2(newX, newY);
                 if (ev.type == EventType.MouseDrag) ev.Use();
             }
@@ -205,8 +211,11 @@ namespace ItemRoulette.UI
                 InitStyles();
                 EnsureWindowPosition();
 
-                // 1. Window Background & Border
-                GUIHelper.DrawRect(_windowRect, new Color(0.06f, 0.08f, 0.12f, 0.96f));
+                float scale = GUIHelper.SafeUiScale;
+                using (GUIHelper.UseScale(scale, _windowRect.position))
+                {
+                    // 1. Window Background & Border
+                    GUIHelper.DrawRect(_windowRect, new Color(0.06f, 0.08f, 0.12f, 0.96f));
                 GUIHelper.DrawBorder(_windowRect, new Color(0.35f, 0.70f, 0.95f, 0.90f), 1);
 
                 // 2. Header Bar: Title on Left, Drag & Close Buttons on Right
@@ -361,14 +370,15 @@ namespace ItemRoulette.UI
                     SetOpen(false);
                 }
 
-                // Top Cursor
-                GUIHelper.DrawTopCursor(_windowRect);
+                    // Top Cursor
+                    GUIHelper.DrawTopCursor(_windowRect, scale, _windowRect.position);
 
-                // Consume unhandled mouse clicks to prevent shooting in background
-                var ev = Event.current;
-                if (ev != null && (ev.type == EventType.MouseDown || ev.type == EventType.MouseUp) && _windowRect.Contains(ev.mousePosition))
-                {
-                    ev.Use();
+                    // Consume unhandled mouse clicks to prevent shooting in background
+                    var ev = Event.current;
+                    if (ev != null && (ev.type == EventType.MouseDown || ev.type == EventType.MouseUp) && _windowRect.Contains(ev.mousePosition))
+                    {
+                        ev.Use();
+                    }
                 }
             }
             catch (Exception ex)

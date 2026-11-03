@@ -195,15 +195,21 @@ namespace ItemRoulette.UI
             {
                 InitStyles();
 
-            // Center window if out of bounds or smaller than modern layout
-            if (_windowRect.width > Screen.width || _windowRect.height > Screen.height || _windowRect.width < 960f)
-            {
-                _windowRect = new Rect(30f, 30f, Mathf.Min(1040f, Screen.width - 60f), Mathf.Min(640f, Screen.height - 60f));
-            }
+                float scale = GUIHelper.SafeUiScale;
+                float baseW = 1040f;
+                float baseH = 640f;
+                float visualW = baseW * scale;
+                float visualH = baseH * scale;
 
-            GUI.color = Color.white;
-            GUIHelper.DrawRect(_windowRect, new Color(0.06f, 0.08f, 0.12f, 0.98f));
-            GUIHelper.DrawBorder(_windowRect, new Color(0.35f, 0.45f, 0.65f, 0.95f), 2);
+                float startX = Mathf.Max(10f, (Screen.width - visualW) / 2f);
+                float startY = Mathf.Max(20f, (Screen.height - visualH) / 2f);
+                _windowRect = new Rect(startX, startY, baseW, baseH);
+
+                using (GUIHelper.UseScale(scale, _windowRect.position))
+                {
+                    GUI.color = Color.white;
+                    GUIHelper.DrawRect(_windowRect, new Color(0.06f, 0.08f, 0.12f, 0.98f));
+                    GUIHelper.DrawBorder(_windowRect, new Color(0.35f, 0.45f, 0.65f, 0.95f), 2);
 
             // 1. Header
             Rect headerRect = new Rect(_windowRect.x + 10f, _windowRect.y + 6f, _windowRect.width - 90f, 24f);
@@ -403,7 +409,8 @@ namespace ItemRoulette.UI
             GUI.Label(new Rect(footerRect.x + 8f, footerRect.y + 3f, footerRect.width - 16f, 20f), statsStr, _statsStyle);
 
             // Draw cursor on top only when pointer is inside window bounds
-            GUIHelper.DrawTopCursor(_windowRect);
+            GUIHelper.DrawTopCursor(_windowRect, scale, _windowRect.position);
+            }
         }
         finally
         {

@@ -1027,7 +1027,9 @@ namespace ItemRoulette.UI
         // =========================================================================
         private void DrawTopReelBanner(HUD hud)
         {
-            Rect boxRect = RouletteUI.GetInventoryFieldRect(hud);
+            using (GUIHelper.UseScale(GUIHelper.SafeUiScale, new Vector2(Screen.width / 2f, 0f)))
+            {
+                Rect boxRect = RouletteUI.GetInventoryFieldRect(hud);
 
             // Field Background & Border (identical to Item Roulette)
             GUIHelper.DrawRect(boxRect, new Color(0.07f, 0.08f, 0.11f, 0.96f));
@@ -1217,6 +1219,7 @@ namespace ItemRoulette.UI
 
             // Draw Toast Notification under inventory box if active
             DrawToastNotification(boxRect);
+            }
         }
 
         // =========================================================================
@@ -1226,19 +1229,22 @@ namespace ItemRoulette.UI
         {
             if (_isWindowPosInitialized) return;
 
+            float scale = GUIHelper.SafeUiScale;
             float windowW = 948f;
             float windowH = 330f;
+            float visualW = windowW * scale;
+            float visualH = windowH * scale;
             float x = ModConfig.CasinoWindowPosX != null ? ModConfig.CasinoWindowPosX.Value : -1;
             float y = ModConfig.CasinoWindowPosY != null ? ModConfig.CasinoWindowPosY.Value : -1;
 
             if (x < 0 || y < 0)
             {
-                x = Mathf.Max(10f, (Screen.width - windowW) / 2f);
-                y = Mathf.Max(60f, Screen.height - windowH - 50f);
+                x = Mathf.Max(10f, (Screen.width - visualW) / 2f);
+                y = Mathf.Max(60f, Screen.height - visualH - 50f);
             }
 
-            x = Mathf.Clamp(x, 0, Mathf.Max(0, Screen.width - windowW));
-            y = Mathf.Clamp(y, 0, Mathf.Max(0, Screen.height - windowH));
+            x = Mathf.Clamp(x, 0, Mathf.Max(0, Screen.width - visualW));
+            y = Mathf.Clamp(y, 0, Mathf.Max(0, Screen.height - visualH));
 
             _windowRect = new Rect(x, y, windowW, windowH);
             _isWindowPosInitialized = true;
@@ -1258,9 +1264,12 @@ namespace ItemRoulette.UI
             }
             else if (_isDraggingWindow && Input.GetMouseButton(0))
             {
+                float scale = GUIHelper.SafeUiScale;
+                float visualW = _windowRect.width * scale;
+                float visualH = _windowRect.height * scale;
                 Vector2 offset = currentMouse - _dragMouseStart;
-                float newX = Mathf.Clamp(_dragWindowStart.x + offset.x, 0, Mathf.Max(0, Screen.width - _windowRect.width));
-                float newY = Mathf.Clamp(_dragWindowStart.y + offset.y, 0, Mathf.Max(0, Screen.height - _windowRect.height));
+                float newX = Mathf.Clamp(_dragWindowStart.x + offset.x, 0, Mathf.Max(0, Screen.width - visualW));
+                float newY = Mathf.Clamp(_dragWindowStart.y + offset.y, 0, Mathf.Max(0, Screen.height - visualH));
                 _windowRect.position = new Vector2(newX, newY);
                 if (ev.type == EventType.MouseDrag)
                 {
@@ -1336,66 +1345,70 @@ namespace ItemRoulette.UI
         {
             EnsureWindowPosition();
 
-            // Window Background & Gold Border
-            GUIHelper.DrawRect(_windowRect, new Color(0.06f, 0.08f, 0.12f, 0.96f));
-            GUIHelper.DrawBorder(_windowRect, new Color(0.85f, 0.70f, 0.25f, 0.95f), 1);
-
-            // 1. Header Bar: Title on Left, Drag Button and Close Button on Right
-            Rect titleRect = new Rect(_windowRect.x + 12f, _windowRect.y + 6f, _windowRect.width - 90f, 22f);
-            GUI.Label(titleRect, Localization.Get("★ СТОЛ КАЗИНО • СТАВКИ ★", "★ CASINO TABLE • BETTING ★"), _winHeaderStyle);
-
-            // Drag Button [ ✥ ] on the right
-            Rect dragBtnRect = new Rect(_windowRect.xMax - 62f, _windowRect.y + 5f, 26f, 22f);
-            HandleWindowDrag(dragBtnRect);
-
-            bool isDragHover = dragBtnRect.Contains(Event.current.mousePosition);
-            Color dragBg = _isDraggingWindow
-                ? new Color(0.20f, 0.45f, 0.70f, 0.95f)
-                : (isDragHover ? new Color(0.22f, 0.28f, 0.38f, 0.95f) : new Color(0.14f, 0.17f, 0.24f, 0.92f));
-            Color dragBorder = _isDraggingWindow
-                ? new Color(0.40f, 0.85f, 0.95f, 1f)
-                : (isDragHover ? new Color(0.45f, 0.80f, 0.95f, 0.90f) : new Color(0.38f, 0.45f, 0.58f, 0.80f));
-            Color dragIconCol = _isDraggingWindow
-                ? Color.white
-                : (isDragHover ? new Color(0.40f, 0.85f, 0.95f, 1f) : new Color(0.55f, 0.75f, 0.88f, 0.90f));
-
-            DrawUnifiedButton(dragBtnRect, "✥", dragBg, dragBorder, dragIconCol, 14, FontStyle.Bold);
-
-            // Close Button [ ✕ ] on the right
-            Rect closeBtnRect = new Rect(_windowRect.xMax - 32f, _windowRect.y + 5f, 24f, 22f);
-            bool isCloseHover = closeBtnRect.Contains(Event.current.mousePosition);
-            Color closeBg = isCloseHover ? new Color(0.70f, 0.18f, 0.22f, 0.95f) : new Color(0.14f, 0.16f, 0.22f, 0.90f);
-            Color closeBorder = isCloseHover ? new Color(1f, 0.45f, 0.50f, 1f) : new Color(0.42f, 0.35f, 0.40f, 0.75f);
-            Color closeTextCol = isCloseHover ? Color.white : new Color(0.85f, 0.85f, 0.85f);
-
-            if (DrawUnifiedButton(closeBtnRect, "✕", closeBg, closeBorder, closeTextCol, 12, FontStyle.Bold))
+            float scale = GUIHelper.SafeUiScale;
+            using (GUIHelper.UseScale(scale, _windowRect.position))
             {
-                Close();
-                PlaySound("Play_UI_menuClick");
-            }
+                // Window Background & Gold Border
+                GUIHelper.DrawRect(_windowRect, new Color(0.06f, 0.08f, 0.12f, 0.96f));
+                GUIHelper.DrawBorder(_windowRect, new Color(0.85f, 0.70f, 0.25f, 0.95f), 1);
 
-            // Divider Line
-            GUIHelper.DrawRect(new Rect(_windowRect.x + 10f, _windowRect.y + 32f, _windowRect.width - 20f, 1f), new Color(0.25f, 0.28f, 0.38f, 0.8f));
+                // 1. Header Bar: Title on Left, Drag Button and Close Button on Right
+                Rect titleRect = new Rect(_windowRect.x + 12f, _windowRect.y + 6f, _windowRect.width - 90f, 22f);
+                GUI.Label(titleRect, Localization.Get("★ СТОЛ КАЗИНО • СТАВКИ ★", "★ CASINO TABLE • BETTING ★"), _winHeaderStyle);
 
-            // 2. The Felt (Left Panel)
-            float feltX = _windowRect.x + 12f;
-            float feltY = _windowRect.y + 38f;
-            DrawCasinoFelt(feltX, feltY);
+                // Drag Button [ ✥ ] on the right
+                Rect dragBtnRect = new Rect(_windowRect.xMax - 62f, _windowRect.y + 5f, 26f, 22f);
+                HandleWindowDrag(dragBtnRect);
 
-            // 3. The Sidebar (Right Panel)
-            float sideX = _windowRect.x + 682f;
-            float sideY = _windowRect.y + 38f;
-            float sideW = 254f;
-            DrawCasinoSidebar(sideX, sideY, sideW);
+                bool isDragHover = dragBtnRect.Contains(Event.current.mousePosition);
+                Color dragBg = _isDraggingWindow
+                    ? new Color(0.20f, 0.45f, 0.70f, 0.95f)
+                    : (isDragHover ? new Color(0.22f, 0.28f, 0.38f, 0.95f) : new Color(0.14f, 0.17f, 0.24f, 0.92f));
+                Color dragBorder = _isDraggingWindow
+                    ? new Color(0.40f, 0.85f, 0.95f, 1f)
+                    : (isDragHover ? new Color(0.45f, 0.80f, 0.95f, 0.90f) : new Color(0.38f, 0.45f, 0.58f, 0.80f));
+                Color dragIconCol = _isDraggingWindow
+                    ? Color.white
+                    : (isDragHover ? new Color(0.40f, 0.85f, 0.95f, 1f) : new Color(0.55f, 0.75f, 0.88f, 0.90f));
 
-            // Draw top cursor if mouse is over window
-            GUIHelper.DrawTopCursor(_windowRect);
+                DrawUnifiedButton(dragBtnRect, "✥", dragBg, dragBorder, dragIconCol, 14, FontStyle.Bold);
 
-            // Consume any unhandled mouse clicks inside window bounds to prevent IMGUI event bleeding
-            var ev = Event.current;
-            if (ev != null && (ev.type == EventType.MouseDown || ev.type == EventType.MouseUp) && _windowRect.Contains(ev.mousePosition))
-            {
-                ev.Use();
+                // Close Button [ ✕ ] on the right
+                Rect closeBtnRect = new Rect(_windowRect.xMax - 32f, _windowRect.y + 5f, 24f, 22f);
+                bool isCloseHover = closeBtnRect.Contains(Event.current.mousePosition);
+                Color closeBg = isCloseHover ? new Color(0.70f, 0.18f, 0.22f, 0.95f) : new Color(0.14f, 0.16f, 0.22f, 0.90f);
+                Color closeBorder = isCloseHover ? new Color(1f, 0.45f, 0.50f, 1f) : new Color(0.42f, 0.35f, 0.40f, 0.75f);
+                Color closeTextCol = isCloseHover ? Color.white : new Color(0.85f, 0.85f, 0.85f);
+
+                if (DrawUnifiedButton(closeBtnRect, "✕", closeBg, closeBorder, closeTextCol, 12, FontStyle.Bold))
+                {
+                    Close();
+                    PlaySound("Play_UI_menuClick");
+                }
+
+                // Divider Line
+                GUIHelper.DrawRect(new Rect(_windowRect.x + 10f, _windowRect.y + 32f, _windowRect.width - 20f, 1f), new Color(0.25f, 0.28f, 0.38f, 0.8f));
+
+                // 2. The Felt (Left Panel)
+                float feltX = _windowRect.x + 12f;
+                float feltY = _windowRect.y + 38f;
+                DrawCasinoFelt(feltX, feltY);
+
+                // 3. The Sidebar (Right Panel)
+                float sideX = _windowRect.x + 682f;
+                float sideY = _windowRect.y + 38f;
+                float sideW = 254f;
+                DrawCasinoSidebar(sideX, sideY, sideW);
+
+                // Draw top cursor if mouse is over window
+                GUIHelper.DrawTopCursor(_windowRect, scale, _windowRect.position);
+
+                // Consume any unhandled mouse clicks inside window bounds to prevent IMGUI event bleeding
+                var ev = Event.current;
+                if (ev != null && (ev.type == EventType.MouseDown || ev.type == EventType.MouseUp) && _windowRect.Contains(ev.mousePosition))
+                {
+                    ev.Use();
+                }
             }
         }
 

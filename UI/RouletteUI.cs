@@ -1396,8 +1396,10 @@ namespace ItemRoulette.UI
 
                 InitStyles();
 
-                var hud = HUD.readOnlyInstanceList[0];
-                Rect boxRect = GetInventoryFieldRect(hud);
+                using (GUIHelper.UseScale(GUIHelper.SafeUiScale, new Vector2(Screen.width / 2f, 0f)))
+                {
+                    var hud = HUD.readOnlyInstanceList[0];
+                    Rect boxRect = GetInventoryFieldRect(hud);
 
                 // 1. Idle state: Subtle hint pill positioned cleanly outside the items zone (above top border)
                 if (_state == BannerState.Hidden)
@@ -2250,6 +2252,7 @@ namespace ItemRoulette.UI
                 // Draw toast notification under the items window if active
                 DrawToastNotification(boxRect);
                 DrawHoldProgressBar(boxRect);
+                }
             }
             catch (Exception ex)
             {

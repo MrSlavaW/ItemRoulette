@@ -695,6 +695,8 @@
         "ITEMROULETTE_CONFIG_SOLITUDEREWARDALL_DESC": "Выдавать ли бесплатные крутки 'Затяжного одиночества' всей команде (Вкл) или только владельцу предмета (Выкл).",
         "ITEMROULETTE_CONFIG_ENABLEITEMDESCRIPTIONADDITIONS_NAME": "Описания механик в подсказках предметов",
         "ITEMROULETTE_CONFIG_ENABLEITEMDESCRIPTIONADDITIONS_DESC": "Добавлять ли к описаниям ванильных предметов подсказки об их новых механиках в ItemRoulette (Затяжное одиночество, Кукла шанса, Звезда скидок, Клевер, Чистота).",
+        "ITEMROULETTE_CONFIG_UISCALE_NAME": "Масштаб интерфейса (UI)",
+        "ITEMROULETTE_CONFIG_UISCALE_DESC": "Общий множитель масштабирования элементов интерфейса мода (баннеры рулетки, тосты, стол казино, журнал, админ-панель). Позволяет адаптировать размер UI под различные разрешения экранов (1080p, 1440p, 4K, Steam Deck).",
         "ITEMROULETTE_CONFIG_NOTIFICATIONJOURNALHOTKEY_NAME": "Горячая клавиша Журнала уведомлений",
         "ITEMROULETTE_CONFIG_NOTIFICATIONJOURNALHOTKEY_DESC": "Горячая клавиша для открытия и закрытия Журнала событий забега (по умолчанию [J]).",
         "ITEMROULETTE_TIER_LUNAR_VOID": "Пустота / Луна",

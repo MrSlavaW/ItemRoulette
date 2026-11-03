@@ -53,6 +53,7 @@ namespace ItemRoulette.Configuration
         public static ConfigEntry<float> AutoSpinDelay { get; private set; } = null!;
         public static ConfigEntry<bool> ShowChanceWidgetInUI { get; private set; } = null!;
         public static ConfigEntry<bool> EnableItemDescriptionAdditions { get; private set; } = null!;
+        public static ConfigEntry<float> UiScale { get; private set; } = null!;
 
         // 00b. Client - Controls & Hotkeys
         public static ConfigEntry<KeyboardShortcut> Hotkey { get; private set; } = null!;
@@ -442,6 +443,13 @@ namespace ItemRoulette.Configuration
                 "EnableItemDescriptionAdditions",
                 true,
                 "Добавлять ли к описаниям ванильных предметов подсказки об их новых механиках в ItemRoulette (Затяжное одиночество, Кукла шанса, Звезда скидок, Клевер, Чистота)."
+            );
+
+            UiScale = config.Bind(
+                "00a. Client - General & UI",
+                "UiScale",
+                1.0f,
+                "Масштаб элементов интерфейса мода (0.1 - 5.0, по умолчанию 1.0). Позволяет адаптировать размер UI под различные разрешения экранов (1080p, 1440p, 4K, Steam Deck)."
             );
 
             // ==========================================

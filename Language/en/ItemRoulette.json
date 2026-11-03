@@ -695,6 +695,8 @@
         "ITEMROULETTE_CONFIG_SOLITUDEREWARDALL_DESC": "Whether Longstanding Solitude level up spins are awarded to all players or only the item owner.",
         "ITEMROULETTE_CONFIG_ENABLEITEMDESCRIPTIONADDITIONS_NAME": "Mod Mechanics in Item Descriptions",
         "ITEMROULETTE_CONFIG_ENABLEITEMDESCRIPTIONADDITIONS_DESC": "Whether to append hints about ItemRoulette mechanics to item descriptions (Longstanding Solitude, Chance Doll, Sale Star, 57 Leaf Clover, Purity).",
+        "ITEMROULETTE_CONFIG_UISCALE_NAME": "UI Scale",
+        "ITEMROULETTE_CONFIG_UISCALE_DESC": "Overall scale multiplier for mod UI elements (roulette banners, toasts, casino table, journal, admin menu). Adjusts display size for high-res (1440p/4K) or compact screens (Steam Deck).",
         "ITEMROULETTE_CONFIG_NOTIFICATIONJOURNALHOTKEY_NAME": "Notification Journal Hotkey",
         "ITEMROULETTE_CONFIG_NOTIFICATIONJOURNALHOTKEY_DESC": "Key to open and close the Run Event Log / Journal (default [J]).",
         "ITEMROULETTE_TIER_LUNAR_VOID": "Void / Lunar",

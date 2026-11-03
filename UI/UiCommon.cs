@@ -169,9 +169,9 @@ namespace ItemRoulette.UI
             _cursorCapture.Release();
         }
 
-        public static void DrawTopCursor(Rect? boundingBox = null)
+        public static void DrawTopCursor(Rect? boundingBox = null, float scale = 1.0f, Vector2? pivot = null)
         {
-            GUIHelper.DrawTopCursor(boundingBox);
+            GUIHelper.DrawTopCursor(boundingBox, scale, pivot);
         }
 
         // =====================================================================

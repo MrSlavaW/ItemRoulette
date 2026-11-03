@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using ItemRoulette.Configuration;
 using RoR2;
 using RoR2.UI;
 using TMPro;
@@ -96,6 +97,39 @@ namespace ItemRoulette.UI
 
             return false;
         }
+
+        public static float SafeUiScale => Mathf.Clamp(ModConfig.UiScale?.Value ?? 1.0f, 0.1f, 5.0f);
+
+        public readonly struct GuiScaleScope : System.IDisposable
+        {
+            private readonly Matrix4x4 _previousMatrix;
+            private readonly bool _active;
+
+            public GuiScaleScope(float scale, Vector2 pivot)
+            {
+                if (Mathf.Abs(scale - 1.0f) > 0.001f && scale > 0.001f)
+                {
+                    _previousMatrix = GUI.matrix;
+                    _active = true;
+                    GUIUtility.ScaleAroundPivot(new Vector2(scale, scale), pivot);
+                }
+                else
+                {
+                    _previousMatrix = Matrix4x4.identity;
+                    _active = false;
+                }
+            }
+
+            public void Dispose()
+            {
+                if (_active)
+                {
+                    GUI.matrix = _previousMatrix;
+                }
+            }
+        }
+
+        public static GuiScaleScope UseScale(float scale, Vector2 pivot) => new GuiScaleScope(scale, pivot);
 
         public static Texture2D GetSolidTexture(Color color)
         {
@@ -329,33 +363,56 @@ namespace ItemRoulette.UI
             return false;
         }
 
-        public static void DrawTopCursor(Rect? boundingBox = null)
+        public static void DrawTopCursor(Rect? boundingBox = null, float scale = 1.0f, Vector2? pivot = null)
         {
             Vector2 mousePos = new Vector2(Input.mousePosition.x, Screen.height - Input.mousePosition.y);
-            if (boundingBox.HasValue && !boundingBox.Value.Contains(mousePos))
+            if (boundingBox.HasValue)
             {
-                return;
+                Rect screenBox = boundingBox.Value;
+                if (Mathf.Abs(scale - 1.0f) > 0.001f && scale > 0.001f)
+                {
+                    Vector2 p = pivot ?? screenBox.position;
+                    screenBox = new Rect(
+                        p.x + (screenBox.x - p.x) * scale,
+                        p.y + (screenBox.y - p.y) * scale,
+                        screenBox.width * scale,
+                        screenBox.height * scale
+                    );
+                }
+
+                if (!screenBox.Contains(mousePos))
+                {
+                    return;
+                }
             }
 
             EnsureCursorLoaded();
             if (_cursorTexture == null) return;
 
+            Matrix4x4 prevMatrix = GUI.matrix;
             int prevDepth = GUI.depth;
-            GUI.depth = -5000;
+            try
+            {
+                GUI.matrix = Matrix4x4.identity;
+                GUI.depth = -5000;
 
-            Rect cursorRect = new Rect(
-                mousePos.x - (_cursorHotspot.x * _cursorWidth),
-                mousePos.y - (_cursorHotspot.y * _cursorHeight),
-                _cursorWidth,
-                _cursorHeight
-            );
+                Rect cursorRect = new Rect(
+                    mousePos.x - (_cursorHotspot.x * _cursorWidth),
+                    mousePos.y - (_cursorHotspot.y * _cursorHeight),
+                    _cursorWidth,
+                    _cursorHeight
+                );
 
-            Color prevColor = GUI.color;
-            GUI.color = Color.white;
-            GUI.DrawTextureWithTexCoords(cursorRect, _cursorTexture, _cursorUv);
-            GUI.color = prevColor;
-
-            GUI.depth = prevDepth;
+                Color prevColor = GUI.color;
+                GUI.color = Color.white;
+                GUI.DrawTextureWithTexCoords(cursorRect, _cursorTexture, _cursorUv);
+                GUI.color = prevColor;
+            }
+            finally
+            {
+                GUI.depth = prevDepth;
+                GUI.matrix = prevMatrix;
+            }
         }
 
         private static Texture2D CreateProceduralCursorTexture()

@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.5.3] - 2026-11-03
+### UI Elements Scaling & High-Resolution Display Adaptation:
+- **Global UI Scale Setting (`UiScale`)**:
+  - Added configuration setting `UiScale` (0.1x to 5.0x, default 1.0x) under category `00a. Client - General & UI`.
+  - Registered RiskOfOptions slider (`0.10x` to `5.00x` with step `0.05x`) for live in-game adjustment.
+  - Implemented full English and Russian localization tokens (`ITEMROULETTE_CONFIG_UISCALE_NAME`, `ITEMROULETTE_CONFIG_UISCALE_DESC`).
+- **Zero-Allocation IMGUI Matrix Scaling (`GUIHelper.GuiScaleScope`)**:
+  - Implemented engine-level matrix scaling using `GUIUtility.ScaleAroundPivot` in a zero-allocation `IDisposable` scope (`using (GUIHelper.UseScale(scale, pivot))`).
+  - Scales all mod UI elements seamlessly across high-resolution displays (1440p, 4K), ultrawides, and compact screens (Steam Deck).
+  - Automatically transforms IMGUI mouse event coordinates (`Event.current.mousePosition`), guaranteeing 100% pixel-perfect click and hover registration for all buttons and interactive controls.
+- **Smart Anchor Alignment**:
+  - Top reel banner, hint pill, hold bar, and item decision modal (`RouletteUI` & `CasinoRouletteUI`) scale outward from top-center `(Screen.width / 2, 0)`, maintaining perfect symmetrical alignment above player inventory.
+  - Toast notification card stack (`NotificationToastUI`) scales from bottom-left screen anchor `(24, Screen.height - 180)` above the character portrait.
+  - Draggable windows (Casino betting table, notification journal, chaos admin menu) scale from top-left window coordinates with dynamic screen bounds clamping (`_windowRect.size * scale`).
+- **Native Cursor Isolation**:
+  - Isolated software mouse cursors (`GUIHelper.DrawTopCursor`) to render at native 1:1 screen resolution (`Matrix4x4.identity`), preventing cursors from becoming oversized at high UI scale or microscopic at low UI scale.
+
 ## [1.5.2] - 2026-11-03
 ### Native Permanent Curse Penalty & Admin Menu Sync Fix:
 - **Native Max Health Penalty for Void/Lunar Item Declines**:

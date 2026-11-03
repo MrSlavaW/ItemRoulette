@@ -63,6 +63,7 @@ namespace ItemRoulette.Configuration
                 AddOption(new SliderOption(ModConfig.AutoSpinDelay, new SliderConfig { min = 0.2f, max = 3.0f, FormatString = "{0:0.0}s" }), "ITEMROULETTE_CONFIG_AUTOSPINDELAY_NAME", "ITEMROULETTE_CONFIG_AUTOSPINDELAY_DESC", "ITEMROULETTE_CAT_00A");
                 AddOption(new CheckBoxOption(ModConfig.ShowChanceWidgetInUI), "ITEMROULETTE_CONFIG_SHOWCHANCEWIDGETINUI_NAME", "ITEMROULETTE_CONFIG_SHOWCHANCEWIDGETINUI_DESC", "ITEMROULETTE_CAT_00A");
                 AddOption(new CheckBoxOption(ModConfig.EnableItemDescriptionAdditions), "ITEMROULETTE_CONFIG_ENABLEITEMDESCRIPTIONADDITIONS_NAME", "ITEMROULETTE_CONFIG_ENABLEITEMDESCRIPTIONADDITIONS_DESC", "ITEMROULETTE_CAT_00A");
+                AddOption(new SliderOption(ModConfig.UiScale, new SliderConfig { min = 0.1f, max = 5.0f, FormatString = "{0:0.00}x" }), "ITEMROULETTE_CONFIG_UISCALE_NAME", "ITEMROULETTE_CONFIG_UISCALE_DESC", "ITEMROULETTE_CAT_00A");
 
                 // ==========================================
                 // 00b. Client - Controls & Hotkeys
