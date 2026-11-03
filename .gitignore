@@ -1,0 +1,24 @@
+# Agent & IDE configurations (never commit to mod repo)
+.agents/
+.agents
+.agent/
+.agent
+_agents/
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+
+# Build & release artifacts
+bin/
+obj/
+dist/
+build/
+*.zip
+ItemRoulette/
+
+# Game dumps, decompiles & secrets
+*_decomp/
+*dump*
+.env
